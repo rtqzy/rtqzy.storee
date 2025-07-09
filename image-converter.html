@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Image Converter — Rtqzy Tools</title>
   <meta name="description" content="Convert images to PNG, JPG, or WebP easily and for free. Powered by Rtqzy.">
-  
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
 
@@ -15,13 +15,14 @@
       const newTheme = html.dataset.theme === "light" ? "dark" : "light";
       html.dataset.theme = newTheme;
       localStorage.setItem("theme", newTheme);
-      document.getElementById("theme-icon").innerHTML = newTheme === "dark" ? lucide.Moon.create().outerHTML : lucide.Sun.create().outerHTML;
+      document.getElementById("theme-icon").innerHTML = newTheme === "dark" ? '<i data-lucide="moon"></i>' : '<i data-lucide="sun"></i>';
+      lucide.createIcons();
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      const saved = localStorage.getItem("theme");
-      if (saved) document.documentElement.dataset.theme = saved;
-      document.getElementById("theme-icon").innerHTML = saved === "dark" ? lucide.Moon.create().outerHTML : lucide.Sun.create().outerHTML;
+      const saved = localStorage.getItem("theme") || "light";
+      document.documentElement.dataset.theme = saved;
+      document.getElementById("theme-icon").innerHTML = saved === "dark" ? '<i data-lucide="moon"></i>' : '<i data-lucide="sun"></i>';
       lucide.createIcons();
     });
   </script>
@@ -31,19 +32,16 @@
       background-color: #0f172a;
       color: #f1f5f9;
     }
-
     html[data-theme='light'] {
       background-color: #f8fafc;
       color: #0f172a;
     }
-
     .glass {
       backdrop-filter: blur(16px);
       background: rgba(255, 255, 255, 0.07);
       border: 1px solid rgba(255, 255, 255, 0.15);
       box-shadow: 0 0 25px rgba(255, 255, 255, 0.05);
     }
-
     html[data-theme='dark'] .glass {
       background: rgba(30, 41, 59, 0.25);
       border-color: rgba(255, 255, 255, 0.05);
@@ -73,7 +71,7 @@
   <main class="flex-grow px-6 pb-12">
     <div class="glass max-w-xl mx-auto p-6 rounded-2xl text-center space-y-4">
       <input type="file" id="upload" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200 transition" />
-      
+
       <div>
         <label class="text-sm font-medium">Convert to:</label>
         <select id="format" class="mt-2 px-3 py-2 rounded bg-white dark:bg-slate-800 dark:text-white border">
