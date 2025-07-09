@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PDF Tools — Rtqzy</title>
+  <meta name="description" content="Merge PDF files easily for free. All tools run client-side. No upload.">
+
+  <!-- Tailwind CSS + Lucide Icons -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- PDF-lib -->
+  <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const newTheme = html.dataset.theme === "light" ? "dark" : "light";
+      html.dataset.theme = newTheme;
+      localStorage.setItem("theme", newTheme);
+      document.getElementById("theme-icon").innerHTML = newTheme === "dark" ? lucide.Moon.create().outerHTML : lucide.Sun.create().outerHTML;
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const saved = localStorage.getItem("theme");
+      if (saved) document.documentElement.dataset.theme = saved;
+      document.getElementById("theme-icon").innerHTML = saved === "dark" ? lucide.Moon.create().outerHTML : lucide.Sun.create().outerHTML;
+      lucide.createIcons();
+    });
+  </script>
+
+  <style>
+    html[data-theme='dark'] {
+      background-color: #0f172a;
+      color: #f1f5f9;
+    }
+
+    html[data-theme='light'] {
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+
+    .glass {
+      backdrop-filter: blur(16px);
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.05);
+    }
+
+    html[data-theme='dark'] .glass {
+      background: rgba(30, 41, 59, 0.25);
+      border-color: rgba(255, 255, 255, 0.05);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans transition">
+
+  <!-- Header -->
+  <header class="glass flex justify-between items-center px-6 py-4 sticky top-0 z-50">
+    <a href="index.html" class="text-xl font-bold tracking-tight">← Rtqzy Tools</a>
+    <button onclick="toggleTheme()" class="rounded-full p-2 hover:bg-blue-500 hover:text-white transition" id="theme-icon"></button>
+  </header>
+
+  <!-- Ad Banner -->
+  <div class="text-center text-sm py-2 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-900 font-medium">
+    📢 Ad Placeholder – Merge your documents and your income
+  </div>
+
+  <!-- Hero -->
+  <section class="text-center py-10 px-4">
+    <h1 class="text-3xl font-extrabold mb-2">Merge PDF Files</h1>
+    <p class="text-gray-500 dark:text-gray-300 max-w-xl mx-auto">Upload multiple PDF files and download a single merged document. Fast, private, no upload required.</p>
+  </section>
+
+  <!-- Tool UI -->
+  <main class="flex-grow px-6 pb-12">
+    <div class="glass max-w-xl mx-auto p-6 rounded-2xl text-center space-y-6">
+
+      <input type="file" id="pdfUpload" accept="application/pdf" multiple class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-purple-100 file:text-purple-700 hover:file:bg-purple-200 transition" />
+
+      <ul id="fileList" class="text-sm text-left space-y-1 text-gray-600 dark:text-gray-300"></ul>
+
+      <button onclick="mergePDFs()" class="px-6 py-2 bg-purple-600 text-white rounded-full hover:bg-purple-700 transition disabled:opacity-50" id="mergeBtn">Merge & Download</button>
+
+    </div>
+  </main>
+
+  <!-- Footer Ad -->
+  <div class="text-center text-sm py-2 bg-gradient-to-r from-purple-100 to-purple-200 text-purple-900 font-medium">
+    💼 Ad Placeholder – Passive PDF power
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center py-6 text-xs text-gray-500 dark:text-gray-400">
+    &copy; 2025 Rtqzy.com — Tools that pay for themselves.
+  </footer>
+
+  <!-- Merge Script -->
+  <script>
+    const fileListEl = document.getElementById('fileList');
+    const mergeBtn = document.getElementById('mergeBtn');
+    let pdfFiles = [];
+
+    document.getElementById('pdfUpload').addEventListener('change', async (e) => {
+      pdfFiles = Array.from(e.target.files);
+      fileListEl.innerHTML = "";
+      pdfFiles.forEach(f => {
+        const li = document.createElement("li");
+        li.textContent = `📄 ${f.name}`;
+        fileListEl.appendChild(li);
+      });
+      mergeBtn.disabled = pdfFiles.length < 2;
+    });
+
+    async function mergePDFs() {
+      if (pdfFiles.length < 2) return alert("Select at least two PDFs to merge.");
+
+      const mergedPdf = await PDFLib.PDFDocument.create();
+
+      for (const file of pdfFiles) {
+        const bytes = await file.arrayBuffer();
+        const pdf = await PDFLib.PDFDocument.load(bytes);
+        const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
+        copiedPages.forEach(page => mergedPdf.addPage(page));
+      }
+
+      const mergedBytes = await mergedPdf.save();
+      const blob = new Blob([mergedBytes], { type: "application/pdf" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "merged.pdf";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>
