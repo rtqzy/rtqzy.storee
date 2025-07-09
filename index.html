@@ -3,26 +3,31 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rtqzy Tools — Passive Power</title>
-  <meta name="description" content="Free daily tools like image converters, YouTube to MP3, PDF tools, and more.">
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet" />
+  <title>Rtqzy Tools — Free Online Converters</title>
+  <meta name="description" content="Free, modern tools to convert images, YouTube to MP3, PDF files and more. Built for performance and passive income.">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
   <script>
     function toggleTheme() {
       const html = document.documentElement;
       const newTheme = html.dataset.theme === "light" ? "dark" : "light";
       html.dataset.theme = newTheme;
       localStorage.setItem("theme", newTheme);
-      document.getElementById("theme-icon").textContent = newTheme === "dark" ? "🌙" : "☀️";
+      document.getElementById("theme-icon").innerHTML = newTheme === "dark" ? lucide.Moon.create().outerHTML : lucide.Sun.create().outerHTML;
     }
 
     document.addEventListener("DOMContentLoaded", () => {
       const saved = localStorage.getItem("theme");
-      if (saved) {
-        document.documentElement.dataset.theme = saved;
-        document.getElementById("theme-icon").textContent = saved === "dark" ? "🌙" : "☀️";
-      }
+      if (saved) document.documentElement.dataset.theme = saved;
+      document.getElementById("theme-icon").innerHTML = saved === "dark" ? lucide.Moon.create().outerHTML : lucide.Sun.create().outerHTML;
     });
   </script>
+
   <style>
     html[data-theme='dark'] {
       background-color: #0f172a;
@@ -45,63 +50,59 @@
       background: rgba(30, 41, 59, 0.25);
       border-color: rgba(255, 255, 255, 0.05);
     }
-
-    .tool-card:hover {
-      box-shadow: 0 0 12px rgba(59, 130, 246, 0.6);
-      transform: translateY(-3px) scale(1.02);
-    }
   </style>
 </head>
-<body class="min-h-screen flex flex-col font-sans transition-colors duration-300">
+<body class="min-h-screen flex flex-col transition duration-300 ease-in-out font-sans">
 
   <!-- Header -->
-  <header class="glass sticky top-0 z-50 flex items-center justify-between p-4 shadow-md">
-    <h1 class="text-xl font-bold tracking-wide">💰 Rtqzy Tools</h1>
-    <button onclick="toggleTheme()" class="flex items-center gap-2 px-4 py-1 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition">
-      <span id="theme-icon">☀️</span> Toggle
-    </button>
+  <header class="glass flex justify-between items-center px-6 py-4 sticky top-0 z-50">
+    <div class="text-2xl font-bold tracking-tight">Rtqzy Tools</div>
+    <button onclick="toggleTheme()" class="rounded-full p-2 hover:bg-blue-500 hover:text-white transition" id="theme-icon"></button>
   </header>
 
-  <!-- Ad Block -->
-  <div class="w-full bg-gradient-to-r from-yellow-100 via-yellow-50 to-yellow-100 text-center text-sm p-2 font-medium text-yellow-800">
-    🔔 Placeholder: Your ad goes here (Monetag or banner)
-  </div>
+  <!-- Ad Banner -->
+  <div class="text-center text-sm py-2 bg-gradient-to-r from-yellow-100 to-yellow-200 text-yellow-900 font-medium">🔒 Ad Placeholder – Your passive income source goes here</div>
 
   <!-- Hero Section -->
   <section class="text-center py-12 px-4">
-    <h2 class="text-4xl font-extrabold mb-3 tracking-tight">Tools You Actually Use</h2>
-    <p class="text-lg opacity-80 max-w-xl mx-auto">Fast, clean, and ad-powered. Start using free converters, downloaders & more — built for 2025.</p>
+    <h1 class="text-4xl font-extrabold mb-4">Modern Free Tools for Everyday Use</h1>
+    <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">Convert images, download YouTube videos, merge PDFs — all in one sleek toolkit built for speed, simplicity and passive income.</p>
   </section>
 
-  <!-- Tools Grid -->
+  <!-- Tool Cards -->
   <main class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-6 pb-16">
-    <a href="image-converter.html" class="tool-card glass p-6 rounded-2xl text-center transition-transform duration-300">
-      <div class="text-4xl">🖼️</div>
-      <h3 class="text-xl font-semibold mt-2">Image Converter</h3>
-      <p class="text-sm opacity-75 mt-1">JPG, PNG, WebP & more.</p>
+    <!-- Image Converter -->
+    <a href="image-converter.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
+      <div class="text-blue-500 mb-3" data-lucide="image" style="width: 36px; height: 36px;"></div>
+      <h3 class="text-xl font-semibold">Image Converter</h3>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">JPG ↔ PNG, WebP, more</p>
     </a>
 
-    <a href="yt-downloader.html" class="tool-card glass p-6 rounded-2xl text-center transition-transform duration-300">
-      <div class="text-4xl">🎵</div>
-      <h3 class="text-xl font-semibold mt-2">YouTube to MP3/MP4</h3>
-      <p class="text-sm opacity-75 mt-1">Convert videos to audio fast.</p>
+    <!-- YouTube Downloader -->
+    <a href="yt-downloader.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
+      <div class="text-red-500 mb-3" data-lucide="youtube" style="width: 36px; height: 36px;"></div>
+      <h3 class="text-xl font-semibold">YouTube to MP3/MP4</h3>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Download videos easily</p>
     </a>
 
-    <a href="pdf-tools.html" class="tool-card glass p-6 rounded-2xl text-center transition-transform duration-300">
-      <div class="text-4xl">📄</div>
-      <h3 class="text-xl font-semibold mt-2">PDF Tools</h3>
-      <p class="text-sm opacity-75 mt-1">Merge, split, compress.</p>
+    <!-- PDF Tools -->
+    <a href="pdf-tools.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
+      <div class="text-purple-500 mb-3" data-lucide="file-text" style="width: 36px; height: 36px;"></div>
+      <h3 class="text-xl font-semibold">PDF Tools</h3>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Merge, split, compress</p>
     </a>
   </main>
 
   <!-- Footer Ad -->
-  <div class="w-full bg-gradient-to-r from-blue-100 via-white to-blue-100 text-center text-sm p-2 font-medium text-blue-800">
-    📢 Placeholder: Another ad zone (footer/banner)
-  </div>
+  <div class="text-center text-sm py-2 bg-gradient-to-r from-blue-100 to-blue-200 text-blue-900 font-medium">📢 Ad Space – Footer banner goes here</div>
 
   <!-- Footer -->
-  <footer class="text-center py-6 text-sm opacity-70">
-    &copy; 2025 <strong>Rtqzy.com</strong> — Tools that pay for themselves 💸
+  <footer class="text-center py-6 text-xs text-gray-500 dark:text-gray-400">
+    &copy; 2025 Rtqzy.com — Simple tools. Scalable income. 💼
   </footer>
+
+  <script>
+    lucide.createIcons();
+  </script>
 </body>
 </html>
