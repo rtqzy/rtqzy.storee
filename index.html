@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rtqzy Tools — Passive Power</title>
+  <meta name="description" content="Free daily tools like image converters, YouTube to MP3, PDF tools, and more.">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.4.1/dist/tailwind.min.css" rel="stylesheet" />
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const newTheme = html.dataset.theme === "light" ? "dark" : "light";
+      html.dataset.theme = newTheme;
+      localStorage.setItem("theme", newTheme);
+      document.getElementById("theme-icon").textContent = newTheme === "dark" ? "🌙" : "☀️";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const saved = localStorage.getItem("theme");
+      if (saved) {
+        document.documentElement.dataset.theme = saved;
+        document.getElementById("theme-icon").textContent = saved === "dark" ? "🌙" : "☀️";
+      }
+    });
+  </script>
+  <style>
+    html[data-theme='dark'] {
+      background-color: #0f172a;
+      color: #f1f5f9;
+    }
+
+    html[data-theme='light'] {
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+
+    .glass {
+      backdrop-filter: blur(16px);
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.05);
+    }
+
+    html[data-theme='dark'] .glass {
+      background: rgba(30, 41, 59, 0.25);
+      border-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .tool-card:hover {
+      box-shadow: 0 0 12px rgba(59, 130, 246, 0.6);
+      transform: translateY(-3px) scale(1.02);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans transition-colors duration-300">
+
+  <!-- Header -->
+  <header class="glass sticky top-0 z-50 flex items-center justify-between p-4 shadow-md">
+    <h1 class="text-xl font-bold tracking-wide">💰 Rtqzy Tools</h1>
+    <button onclick="toggleTheme()" class="flex items-center gap-2 px-4 py-1 rounded-full bg-blue-500 text-white hover:bg-blue-600 transition">
+      <span id="theme-icon">☀️</span> Toggle
+    </button>
+  </header>
+
+  <!-- Ad Block -->
+  <div class="w-full bg-gradient-to-r from-yellow-100 via-yellow-50 to-yellow-100 text-center text-sm p-2 font-medium text-yellow-800">
+    🔔 Placeholder: Your ad goes here (Monetag or banner)
+  </div>
+
+  <!-- Hero Section -->
+  <section class="text-center py-12 px-4">
+    <h2 class="text-4xl font-extrabold mb-3 tracking-tight">Tools You Actually Use</h2>
+    <p class="text-lg opacity-80 max-w-xl mx-auto">Fast, clean, and ad-powered. Start using free converters, downloaders & more — built for 2025.</p>
+  </section>
+
+  <!-- Tools Grid -->
+  <main class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-6 pb-16">
+    <a href="image-converter.html" class="tool-card glass p-6 rounded-2xl text-center transition-transform duration-300">
+      <div class="text-4xl">🖼️</div>
+      <h3 class="text-xl font-semibold mt-2">Image Converter</h3>
+      <p class="text-sm opacity-75 mt-1">JPG, PNG, WebP & more.</p>
+    </a>
+
+    <a href="yt-downloader.html" class="tool-card glass p-6 rounded-2xl text-center transition-transform duration-300">
+      <div class="text-4xl">🎵</div>
+      <h3 class="text-xl font-semibold mt-2">YouTube to MP3/MP4</h3>
+      <p class="text-sm opacity-75 mt-1">Convert videos to audio fast.</p>
+    </a>
+
+    <a href="pdf-tools.html" class="tool-card glass p-6 rounded-2xl text-center transition-transform duration-300">
+      <div class="text-4xl">📄</div>
+      <h3 class="text-xl font-semibold mt-2">PDF Tools</h3>
+      <p class="text-sm opacity-75 mt-1">Merge, split, compress.</p>
+    </a>
+  </main>
+
+  <!-- Footer Ad -->
+  <div class="w-full bg-gradient-to-r from-blue-100 via-white to-blue-100 text-center text-sm p-2 font-medium text-blue-800">
+    📢 Placeholder: Another ad zone (footer/banner)
+  </div>
+
+  <!-- Footer -->
+  <footer class="text-center py-6 text-sm opacity-70">
+    &copy; 2025 <strong>Rtqzy.com</strong> — Tools that pay for themselves 💸
+  </footer>
+</body>
+</html>
