@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Link Shortener — Rtqzy Tools</title>
+  <meta name="description" content="Shorten your links using Rtqzy's custom URL tool.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    html[data-theme='dark'] {
+      background-color: #0f172a;
+      color: #f1f5f9;
+    }
+    html[data-theme='light'] {
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+    .glass {
+      backdrop-filter: blur(16px);
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.05);
+    }
+    html[data-theme='dark'] .glass {
+      background: rgba(30, 41, 59, 0.25);
+      border-color: rgba(255, 255, 255, 0.05);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col font-sans transition">
+
+  <!-- Header -->
+  <header class="glass flex justify-between items-center px-6 py-4 sticky top-0 z-50">
+    <a href="index.html" class="text-xl font-bold tracking-tight">← Rtqzy Tools</a>
+    <button onclick="toggleTheme()" class="rounded-full p-2 hover:bg-blue-500 hover:text-white transition" id="theme-icon"></button>
+  </header>
+
+  <!-- Hero -->
+  <section class="text-center py-10 px-4">
+    <h1 class="text-3xl font-extrabold mb-2">Shorten a Link</h1>
+    <p class="text-gray-500 dark:text-gray-300 max-w-xl mx-auto">Create a clean, short link like <strong>rtqzy.store/abc123</strong></p>
+  </section>
+
+  <main class="flex-grow px-6 pb-12">
+    <div class="glass max-w-xl mx-auto p-6 rounded-2xl text-center space-y-6">
+      <input type="url" id="originalUrl" placeholder="https://example.com" class="w-full px-3 py-2 rounded bg-white dark:bg-slate-800 border dark:text-white" />
+      <button onclick="shortenUrl()" class="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition">Generate Link</button>
+      <div id="result" class="mt-4 text-blue-600 font-semibold hidden"></div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center py-6 text-xs text-gray-500 dark:text-gray-400">
+    &copy; 2025 Rtqzy.store — Powered by your clicks 🚀
+  </footer>
+
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const newTheme = html.dataset.theme === "light" ? "dark" : "light";
+      html.dataset.theme = newTheme;
+      localStorage.setItem("theme", newTheme);
+      document.getElementById("theme-icon").innerHTML =
+        newTheme === "dark"
+          ? '<i data-lucide="moon"></i>'
+          : '<i data-lucide="sun"></i>';
+      lucide.createIcons();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const saved = localStorage.getItem("theme") || "light";
+      document.documentElement.dataset.theme = saved;
+      document.getElementById("theme-icon").innerHTML =
+        saved === "dark"
+          ? '<i data-lucide="moon"></i>'
+          : '<i data-lucide="sun"></i>';
+      lucide.createIcons();
+    });
+
+    function generateId(length = 6) {
+      const chars = "abcdefghijklmnopqrstuvwxyz0123456789";
+      let id = "";
+      for (let i = 0; i < length; i++) {
+        id += chars[Math.floor(Math.random() * chars.length)];
+      }
+      return id;
+    }
+
+    function shortenUrl() {
+      const url = document.getElementById("originalUrl").value.trim();
+      if (!url) return alert("Please enter a URL.");
+
+      const id = generateId();
+      const shortLink = `https://rtqzy.store/s/${id}`;
+      document.getElementById("result").textContent = shortLink;
+      document.getElementById("result").classList.remove("hidden");
+    }
+  </script>
+</body>
+</html>
