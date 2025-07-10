@@ -1,143 +1,386 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Rtqzy Tools — Free Online Converters</title>
-  <meta name="description" content="Free, modern tools to convert images, YouTube to MP3, merge PDFs, create QR codes, shorten links, and more. Built for performance, privacy, and passive income.">
-  <meta name="keywords" content="image converter, YouTube downloader, PDF merge, QR code, GIF maker, link shortener, free tools">
-  <meta name="author" content="Rtqzy">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Rtqzy AI Chat - ChatGPT Style</title>
+<style>
+  /* Reset & fonts */
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+  :root {
+    --background-light: #ffffff;
+    --background-dark: #0f1116;
+    --sidebar-bg-light: #f7f7f8;
+    --sidebar-bg-dark: #202123;
+    --text-light: #000000;
+    --text-dark: #e6e6e6;
+    --primary: #10a37f;
+    --input-bg-light: #f2f2f2;
+    --input-bg-dark: #2a2b32;
+    --bubble-user-light: #10a37f;
+    --bubble-user-dark: #2a2b32;
+    --bubble-bot-light: #e5e5ea;
+    --bubble-bot-dark: #3a3b42;
+  }
+  html, body {
+    margin: 0; padding: 0; height: 100%;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
+      Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    background: var(--background-light);
+    color: var(--text-light);
+    transition: background 0.3s, color 0.3s;
+  }
+  html[data-theme='dark'], body[data-theme='dark'] {
+    background: var(--background-dark);
+    color: var(--text-dark);
+  }
 
-  <!-- Tailwind CSS -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
+  /* Layout */
+  #app {
+    display: flex; height: 100vh; overflow: hidden;
+  }
+  #sidebar {
+    width: 250px; background: var(--sidebar-bg-light); border-right: 1px solid #ddd;
+    display: flex; flex-direction: column;
+    transition: background 0.3s, border-color 0.3s;
+  }
+  html[data-theme='dark'] #sidebar {
+    background: var(--sidebar-bg-dark);
+    border-color: #444;
+  }
+  #sidebar header {
+    font-weight: 600; font-size: 1.5rem; padding: 1rem; border-bottom: 1px solid #ddd;
+    user-select: none;
+  }
+  html[data-theme='dark'] #sidebar header {
+    border-color: #444;
+  }
+  #sidebar nav {
+    flex-grow: 1; overflow-y: auto;
+  }
+  #sidebar nav a {
+    display: block; padding: 0.75rem 1rem; text-decoration: none; color: inherit;
+    border-left: 4px solid transparent; transition: background 0.2s, border-color 0.2s;
+    user-select: none;
+  }
+  #sidebar nav a:hover {
+    background: #e1f5ec;
+    border-left-color: var(--primary);
+  }
+  html[data-theme='dark'] #sidebar nav a:hover {
+    background: #264d43;
+  }
+  #sidebar nav a.active {
+    background: #10a37f; color: white; border-left-color: var(--primary);
+  }
 
-  <script>
-    function toggleTheme() {
-      const html = document.documentElement;
-      const newTheme = html.dataset.theme === "light" ? "dark" : "light";
-      html.dataset.theme = newTheme;
-      localStorage.setItem("theme", newTheme);
-      document.getElementById("theme-icon").innerHTML = newTheme === "dark" ? '<i data-lucide="moon"></i>' : '<i data-lucide="sun"></i>';
-      lucide.createIcons();
+  /* Chat area */
+  #chat-container {
+    flex-grow: 1; display: flex; flex-direction: column; background: var(--background-light);
+    transition: background 0.3s;
+  }
+  html[data-theme='dark'] #chat-container {
+    background: var(--background-dark);
+  }
+  #messages {
+    flex-grow: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 12px;
+  }
+  .message {
+    max-width: 65%; padding: 10px 14px; border-radius: 18px; line-height: 1.4; white-space: pre-wrap;
+    font-size: 1rem;
+    user-select: text;
+  }
+  .user {
+    background: var(--bubble-user-light); color: white; align-self: flex-end; border-bottom-right-radius: 4px;
+  }
+  html[data-theme='dark'] .user {
+    background: var(--bubble-user-dark);
+  }
+  .bot {
+    background: var(--bubble-bot-light); color: black; align-self: flex-start; border-bottom-left-radius: 4px;
+  }
+  html[data-theme='dark'] .bot {
+    background: var(--bubble-bot-dark); color: white;
+  }
+
+  /* Input */
+  #input-form {
+    padding: 1rem; border-top: 1px solid #ddd; display: flex; background: var(--sidebar-bg-light);
+    transition: background 0.3s, border-color 0.3s;
+  }
+  html[data-theme='dark'] #input-form {
+    background: var(--sidebar-bg-dark);
+    border-color: #444;
+  }
+  #input {
+    flex-grow: 1; resize: none; font-size: 1rem; padding: 0.75rem 1rem; border-radius: 8px;
+    border: 1px solid #ccc; outline: none;
+    font-family: inherit;
+    transition: border-color 0.2s;
+  }
+  #input:focus {
+    border-color: var(--primary);
+  }
+  #send-btn {
+    margin-left: 0.75rem; padding: 0 1.5rem; background: var(--primary); border: none; color: white;
+    border-radius: 8px; font-weight: 600; cursor: pointer;
+    transition: background 0.2s;
+  }
+  #send-btn:hover:not(:disabled) {
+    background: #0e886f;
+  }
+  #send-btn:disabled {
+    background: #8ccbc4; cursor: not-allowed;
+  }
+
+  /* Top bar */
+  #top-bar {
+    height: 56px; display: flex; align-items: center; justify-content: flex-end;
+    border-bottom: 1px solid #ddd; padding: 0 1rem;
+  }
+  html[data-theme='dark'] #top-bar {
+    border-color: #444;
+  }
+  #theme-toggle {
+    background: transparent; border: none; cursor: pointer;
+    color: inherit; font-size: 1.3rem;
+  }
+
+  /* Sidebar toggle button for mobile */
+  #sidebar-toggle-btn {
+    display: none;
+    position: fixed; top: 1rem; left: 1rem; z-index: 9999;
+    background: var(--primary); color: white; border: none; padding: 0.5rem;
+    border-radius: 6px; cursor: pointer;
+  }
+  @media (max-width: 768px) {
+    #sidebar {
+      position: fixed; top: 0; left: 0; bottom: 0;
+      transform: translateX(-100%);
+      transition: transform 0.3s ease-in-out;
+      z-index: 9998;
+      box-shadow: 4px 0 8px rgba(0,0,0,0.2);
     }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      const saved = localStorage.getItem("theme") || "light";
-      document.documentElement.dataset.theme = saved;
-      document.getElementById("theme-icon").innerHTML = saved === "dark" ? '<i data-lucide="moon"></i>' : '<i data-lucide="sun"></i>';
-      lucide.createIcons();
-
-      const toolCount = 1064012 + Math.floor(Math.random() * 1000);
-      document.getElementById("tool-counter").textContent = toolCount.toLocaleString();
-
-      const facts = [
-        "Did you know? PNG was created in 1996 to replace GIFs.",
-        "Over 1 million tools used this week!",
-        "TikTok has over 1 billion monthly active users.",
-        "The first QR code was invented in 1994 in Japan.",
-        "PDF stands for Portable Document Format."
-      ];
-      document.getElementById("daily-fact").textContent = facts[Math.floor(Math.random() * facts.length)];
-    });
-  </script>
-
-  <style>
-    html[data-theme='dark'] {
-      background-color: #0f172a;
-      color: #f1f5f9;
+    #sidebar.open {
+      transform: translateX(0);
     }
-    html[data-theme='light'] {
-      background-color: #f8fafc;
-      color: #0f172a;
+    #sidebar-toggle-btn {
+      display: block;
     }
-    .glass {
-      backdrop-filter: blur(16px);
-      background: rgba(255, 255, 255, 0.07);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 0 25px rgba(255, 255, 255, 0.05);
-    }
-    html[data-theme='dark'] .glass {
-      background: rgba(30, 41, 59, 0.25);
-      border-color: rgba(255, 255, 255, 0.05);
-    }
-  </style>
+  }
+
+  /* Ad modal */
+  #ad-modal {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.75);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 10000; visibility: hidden; opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  #ad-modal.visible {
+    visibility: visible; opacity: 1;
+  }
+  #ad-modal-content {
+    background: var(--sidebar-bg-light);
+    padding: 2rem; border-radius: 12px;
+    max-width: 400px; width: 90%;
+    color: var(--text-light);
+    text-align: center;
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+    transition: background 0.3s, color 0.3s;
+  }
+  html[data-theme='dark'] #ad-modal-content {
+    background: var(--sidebar-bg-dark);
+    color: var(--text-dark);
+  }
+  #ad-modal button {
+    margin-top: 1.5rem; padding: 0.5rem 1rem;
+    background: var(--primary); border: none; color: white;
+    font-weight: 600; border-radius: 6px; cursor: pointer;
+  }
+  #ad-modal button:disabled {
+    background: #7ab6a4; cursor: not-allowed;
+  }
+</style>
 </head>
-<body class="min-h-screen flex flex-col font-sans transition duration-300 ease-in-out">
+<body>
+<div id="app">
+  <nav id="sidebar">
+    <header>Rtqzy Tools</header>
+    <nav>
+      <a href="#" class="active" data-tool="chat">Chat</a>
+      <a href="yt-downloader.html" target="_blank">YouTube to MP3</a>
+      <a href="pdf-tools.html" target="_blank">PDF Tools</a>
+      <a href="image-converter.html" target="_blank">Image Converter</a>
+      <a href="qr-maker.html" target="_blank">QR Code Generator</a>
+      <a href="discord-gif-maker.html" target="_blank">Discord GIF Maker</a>
+      <a href="link-shortener.html" target="_blank">Link Shortener</a>
+    </nav>
+  </nav>
 
-  <!-- Intro Modal -->
-  <div id="intro-modal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-    <div class="bg-white dark:bg-slate-800 p-8 rounded-xl max-w-md w-full text-center space-y-4 shadow-xl">
-      <h2 class="text-2xl font-bold">Welcome to Rtqzy Tools</h2>
-      <p class="text-gray-600 dark:text-gray-300">Free, sleek tools for converting, downloading, and creating.</p>
-      <button onclick="document.getElementById('intro-modal').remove()" class="mt-2 px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition">Let's Go</button>
+  <main id="chat-container">
+    <div id="top-bar">
+      <button id="sidebar-toggle-btn" title="Toggle sidebar">&#9776;</button>
+      <button id="theme-toggle" title="Toggle Dark/Light Mode">🌙</button>
     </div>
-  </div>
 
-  <!-- Header -->
-  <header class="glass flex justify-between items-center px-6 py-4 sticky top-0 z-40">
-    <div class="text-2xl font-bold tracking-tight">Rtqzy Tools</div>
-    <button onclick="toggleTheme()" class="rounded-full p-2 hover:bg-blue-500 hover:text-white transition" id="theme-icon"></button>
-  </header>
+    <div id="messages" role="log" aria-live="polite" aria-atomic="false"></div>
 
-  <!-- Fact & Counter -->
-  <div class="text-center text-sm py-2 bg-gradient-to-r from-indigo-100 to-indigo-200 text-indigo-900 font-medium">
-    <span id="daily-fact"></span> • <strong id="tool-counter"></strong> tools used
-  </div>
-
-  <!-- Hero Section -->
-  <section class="text-center py-12 px-4">
-    <h1 class="text-4xl font-extrabold mb-4">Modern Free Tools for Everyday Use</h1>
-    <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">Convert images, download videos, shorten links, make GIFs and QR codes — all in one toolkit built for speed, privacy, and passive income.</p>
-  </section>
-
-  <!-- Tool Cards -->
-  <main class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-6 pb-16">
-    <a href="image-converter.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
-      <div class="text-blue-500 mb-3" data-lucide="image" style="width: 36px; height: 36px;"></div>
-      <h3 class="text-xl font-semibold">Image Converter</h3>
-      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">JPG ↔ PNG, WebP, more</p>
-    </a>
-
-    <a href="yt-downloader.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
-      <div class="text-red-500 mb-3" data-lucide="youtube" style="width: 36px; height: 36px;"></div>
-      <h3 class="text-xl font-semibold">YouTube to MP3/MP4</h3>
-      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Download videos easily</p>
-    </a>
-
-    <a href="pdf-tools.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
-      <div class="text-purple-500 mb-3" data-lucide="file-text" style="width: 36px; height: 36px;"></div>
-      <h3 class="text-xl font-semibold">PDF Tools</h3>
-      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Merge, split, compress</p>
-    </a>
-
-    <a href="qr-maker.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
-      <div class="text-green-500 mb-3" data-lucide="qrcode" style="width: 36px; height: 36px;"></div>
-      <h3 class="text-xl font-semibold">QR Code Generator</h3>
-      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Custom QR to any link</p>
-    </a>
-
-    <a href="discord-gif-maker.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
-      <div class="text-pink-500 mb-3" data-lucide="film" style="width: 36px; height: 36px;"></div>
-      <h3 class="text-xl font-semibold">Discord GIF Maker</h3>
-      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Safe GIFs, resize & trim</p>
-    </a>
-
-    <a href="link-shortener.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
-      <div class="text-amber-500 mb-3" data-lucide="link" style="width: 36px; height: 36px;"></div>
-      <h3 class="text-xl font-semibold">Link Shortener</h3>
-      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Easy to share URLs</p>
-    </a>
+    <form id="input-form">
+      <textarea id="input" rows="1" placeholder="Type your message..."></textarea>
+      <button id="send-btn" type="submit" disabled>Send</button>
+    </form>
   </main>
+</div>
 
-  <!-- Footer Ad -->
-  <div class="text-center text-sm py-2 bg-gradient-to-r from-blue-100 to-blue-200 text-blue-900 font-medium">📢 Ad Space – Footer banner goes here</div>
+<div id="ad-modal" role="dialog" aria-modal="true" aria-labelledby="ad-modal-title" aria-describedby="ad-modal-desc">
+  <div id="ad-modal-content">
+    <h2 id="ad-modal-title">Watch this ad to continue</h2>
+    <p id="ad-modal-desc">Please watch the short ad below before continuing to chat.</p>
+    <!-- Simulated ad -->
+    <div style="background:#eee; height:150px; border-radius:8px; margin:1rem 0; display:flex; align-items:center; justify-content:center; font-weight:600; color:#666;">
+      Your Ad Here
+    </div>
+    <button id="ad-button" disabled>Wait 5 seconds...</button>
+  </div>
+</div>
 
-  <!-- Footer -->
-  <footer class="text-center py-6 text-xs text-gray-500 dark:text-gray-400">
-    &copy; 2025 <a href="admin.html" class="hover:underline hover:text-blue-500 transition">Rtqzy.store</a> — Built for creators, powered by clicks 💼
-  </footer>
+<script>
+(() => {
+  // State
+  let messagesSent = 0;
+  const DAILY_LIMIT = 25;
+  const AD_INTERVAL = 5;
+  let adRequired = false;
+
+  // Elements
+  const body = document.body;
+  const sidebar = document.getElementById('sidebar');
+  const sidebarToggleBtn = document.getElementById('sidebar-toggle-btn');
+  const themeToggleBtn = document.getElementById('theme-toggle');
+  const messagesEl = document.getElementById('messages');
+  const inputForm = document.getElementById('input-form');
+  const input = document.getElementById('input');
+  const sendBtn = document.getElementById('send-btn');
+  const adModal = document.getElementById('ad-modal');
+  const adButton = document.getElementById('ad-button');
+
+  // Initialize theme from localStorage
+  function loadTheme() {
+    const theme = localStorage.getItem('theme') || 'light';
+    body.setAttribute('data-theme', theme);
+    themeToggleBtn.textContent = theme === 'light' ? '🌙' : '☀️';
+  }
+  function toggleTheme() {
+    const current = body.getAttribute('data-theme');
+    const next = current === 'light' ? 'dark' : 'light';
+    body.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+    themeToggleBtn.textContent = next === 'light' ? '🌙' : '☀️';
+  }
+
+  // Sidebar toggle for mobile
+  sidebarToggleBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+  });
+
+  // Enable send button if textarea has input
+  input.addEventListener('input', () => {
+    sendBtn.disabled = input.value.trim().length === 0;
+    // Auto resize textarea
+    input.style.height = 'auto';
+    input.style.height = input.scrollHeight + 'px';
+  });
+
+  // Add message to chat
+  function addMessage(text, fromUser) {
+    const div = document.createElement('div');
+    div.classList.add('message');
+    div.classList.add(fromUser ? 'user' : 'bot');
+    div.textContent = text;
+    messagesEl.appendChild(div);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }
+
+  // Show ad modal and force user to watch ad before continuing
+  function showAdModal() {
+    adModal.classList.add('visible');
+    adButton.disabled = true;
+    let count = 5;
+    adButton.textContent = `Wait ${count} seconds...`;
+    const interval = setInterval(() => {
+      count--;
+      if (count > 0) {
+        adButton.textContent = `Wait ${count} seconds...`;
+      } else {
+        clearInterval(interval);
+        adButton.textContent = 'I have watched the ad';
+        adButton.disabled = false;
+      }
+    }, 1000);
+  }
+  function hideAdModal() {
+    adModal.classList.remove('visible');
+  }
+
+  // Show error message in chat
+  function showError(msg) {
+    addMessage(`⚠️ ${msg}`, false);
+  }
+
+  // Send message handler
+  inputForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    if (adRequired) {
+      alert('Please watch the ad to continue chatting.');
+      showAdModal();
+      return;
+    }
+    const question = input.value.trim();
+    if (!question) return;
+    addMessage(question, true);
+    input.value = '';
+    sendBtn.disabled = true;
+
+    try {
+      const res = await fetch('/api/ask', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question }),
+      });
+
+      if (res.status === 402 || res.status === 403) {
+        // Limit hit or ad required
+        adRequired = true;
+        showAdModal();
+      } else if (res.ok) {
+        const data = await res.json();
+        addMessage(data.reply, false);
+        messagesSent++;
+
+        if (messagesSent % AD_INTERVAL === 0 || messagesSent >= DAILY_LIMIT) {
+          adRequired = true;
+          showAdModal();
+        }
+      } else {
+        showError('Could not get a response from AI.');
+      }
+    } catch {
+      showError('Network error or server unreachable.');
+    }
+  });
+
+  // Ad button clicked (user confirms ad watched)
+  adButton.addEventListener('click', () => {
+    adRequired = false;
+    hideAdModal();
+    input.focus();
+  });
+
+  // Initialization
+  loadTheme();
+  input.focus();
+})();
+</script>
+
 </body>
 </html>
-
