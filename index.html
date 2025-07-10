@@ -13,63 +13,6 @@
   <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
-  <script>
-    // User tracking in localStorage
-    function generateUUID() {
-      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        let r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-      });
-    }
-
-    function getUserID() {
-      let id = localStorage.getItem('rtqzy_user_id');
-      if (!id) {
-        id = generateUUID();
-        localStorage.setItem('rtqzy_user_id', id);
-      }
-      return id;
-    }
-
-    function logUsage(tool) {
-      const id = getUserID();
-      const usageLog = JSON.parse(localStorage.getItem('rtqzy_usage_log') || '[]');
-      usageLog.push({ user: id, tool, timestamp: new Date().toISOString() });
-      localStorage.setItem('rtqzy_usage_log', JSON.stringify(usageLog));
-    }
-
-    function toggleTheme() {
-      const html = document.documentElement;
-      const newTheme = html.dataset.theme === "light" ? "dark" : "light";
-      html.dataset.theme = newTheme;
-      localStorage.setItem("theme", newTheme);
-      document.getElementById("theme-icon").innerHTML = newTheme === "dark" ? '<i data-lucide="moon"></i>' : '<i data-lucide="sun"></i>';
-      lucide.createIcons();
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      const saved = localStorage.getItem("theme") || "light";
-      document.documentElement.dataset.theme = saved;
-      document.getElementById("theme-icon").innerHTML = saved === "dark" ? '<i data-lucide="moon"></i>' : '<i data-lucide="sun"></i>';
-      lucide.createIcons();
-
-      // Track index page visit
-      logUsage('index');
-
-      const toolCount = 1064012 + Math.floor(Math.random() * 1000);
-      document.getElementById("tool-counter").textContent = toolCount.toLocaleString();
-
-      const facts = [
-        "Did you know? PNG was created in 1996 to replace GIFs.",
-        "Over 1 million tools used this week!",
-        "TikTok has over 1 billion monthly active users.",
-        "The first QR code was invented in 1994 in Japan.",
-        "PDF stands for Portable Document Format."
-      ];
-      document.getElementById("daily-fact").textContent = facts[Math.floor(Math.random() * facts.length)];
-    });
-  </script>
-
   <style>
     html[data-theme='dark'] {
       background-color: #0f172a;
@@ -89,81 +32,116 @@
       background: rgba(30, 41, 59, 0.25);
       border-color: rgba(255, 255, 255, 0.05);
     }
+    #ad-check:not(:visible) ~ * {
+      display: none;
+    }
   </style>
 </head>
-<body class="min-h-screen flex flex-col font-sans transition duration-300 ease-in-out">
+<body class="min-h-screen flex flex-col font-sans transition duration-300 ease-in-out" oncontextmenu="return false">
 
-  <!-- Intro Modal -->
-  <div id="intro-modal" class="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
-    <div class="bg-white dark:bg-slate-800 p-8 rounded-xl max-w-md w-full text-center space-y-4 shadow-xl">
-      <h2 class="text-2xl font-bold">Welcome to Rtqzy Tools</h2>
-      <p class="text-gray-600 dark:text-gray-300">Free, sleek tools for converting, downloading, and creating.</p>
-      <button onclick="document.getElementById('intro-modal').remove()" class="mt-2 px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition">Let's Go</button>
-    </div>
-  </div>
-
-  <!-- Header -->
   <header class="glass flex justify-between items-center px-6 py-4 sticky top-0 z-40">
     <div class="text-2xl font-bold tracking-tight">Rtqzy Tools</div>
     <button onclick="toggleTheme()" class="rounded-full p-2 hover:bg-blue-500 hover:text-white transition" id="theme-icon"></button>
   </header>
 
-  <!-- Fact & Counter -->
-  <div class="text-center text-sm py-2 bg-gradient-to-r from-indigo-100 to-indigo-200 text-indigo-900 font-medium">
-    <span id="daily-fact"></span> • <strong id="tool-counter"></strong> tools used
+  <div id="ad-check" class="text-center text-sm py-2 bg-gradient-to-r from-indigo-100 to-indigo-200 text-indigo-900 font-medium">
+    📢 Ad: This is a required ad section. You must view this to use the tools.
   </div>
 
-  <!-- Hero Section -->
   <section class="text-center py-12 px-4">
     <h1 class="text-4xl font-extrabold mb-4">Modern Free Tools for Everyday Use</h1>
     <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">Convert images, download videos, shorten links, make GIFs and QR codes — all in one toolkit built for speed, privacy, and passive income.</p>
   </section>
 
-  <!-- Tool Cards -->
   <main class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-6 pb-16">
-    <a href="image-converter.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center" onclick="logUsage('image-converter')">
+    <a href="image-converter.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
       <div class="text-blue-500 mb-3" data-lucide="image" style="width: 36px; height: 36px;"></div>
       <h3 class="text-xl font-semibold">Image Converter</h3>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">JPG ↔ PNG, WebP, more</p>
     </a>
-
-    <a href="yt-downloader.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center" onclick="logUsage('yt-downloader')">
+    <a href="yt-downloader.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
       <div class="text-red-500 mb-3" data-lucide="youtube" style="width: 36px; height: 36px;"></div>
       <h3 class="text-xl font-semibold">YouTube to MP3/MP4</h3>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Download videos easily</p>
     </a>
-
-    <a href="pdf-tools.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center" onclick="logUsage('pdf-tools')">
+    <a href="pdf-tools.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
       <div class="text-purple-500 mb-3" data-lucide="file-text" style="width: 36px; height: 36px;"></div>
       <h3 class="text-xl font-semibold">PDF Tools</h3>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Merge, split, compress</p>
     </a>
-
-    <a href="qr-maker.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center" onclick="logUsage('qr-maker')">
+    <a href="qr-maker.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
       <div class="text-green-500 mb-3" data-lucide="qrcode" style="width: 36px; height: 36px;"></div>
       <h3 class="text-xl font-semibold">QR Code Generator</h3>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Custom QR to any link</p>
     </a>
-
-    <a href="discord-gif-maker.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center" onclick="logUsage('discord-gif-maker')">
+    <a href="discord-gif-maker.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
       <div class="text-pink-500 mb-3" data-lucide="film" style="width: 36px; height: 36px;"></div>
       <h3 class="text-xl font-semibold">Discord GIF Maker</h3>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Safe GIFs, resize & trim</p>
     </a>
-
-    <a href="link-shortener.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center" onclick="logUsage('link-shortener')">
+    <a href="link-shortener.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
       <div class="text-amber-500 mb-3" data-lucide="link" style="width: 36px; height: 36px;"></div>
       <h3 class="text-xl font-semibold">Link Shortener</h3>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Easy to share URLs</p>
     </a>
   </main>
 
-  <!-- Footer Ad -->
-  <div class="text-center text-sm py-2 bg-gradient-to-r from-blue-100 to-blue-200 text-blue-900 font-medium">📢 Ad Space – Footer banner goes here</div>
-
-  <!-- Footer -->
   <footer class="text-center py-6 text-xs text-gray-500 dark:text-gray-400">
     &copy; 2025 <a href="admin.html" class="hover:underline hover:text-blue-500 transition">Rtqzy.store</a> — Built for creators, powered by clicks 💼
   </footer>
+
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const newTheme = html.dataset.theme === "light" ? "dark" : "light";
+      html.dataset.theme = newTheme;
+      localStorage.setItem("theme", newTheme);
+      document.getElementById("theme-icon").innerHTML = newTheme === "dark" ? '<i data-lucide="moon"></i>' : '<i data-lucide="sun"></i>';
+      lucide.createIcons();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const saved = localStorage.getItem("theme") || "light";
+      document.documentElement.dataset.theme = saved;
+      document.getElementById("theme-icon").innerHTML = saved === "dark" ? '<i data-lucide="moon"></i>' : '<i data-lucide="sun"></i>';
+      lucide.createIcons();
+    });
+
+    // Disable devtools and redirect
+    (function() {
+      const check = setInterval(() => {
+        const devtools = new Image();
+        Object.defineProperty(devtools, 'id', {
+          get: function () {
+            window.location.href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+          }
+        });
+        console.log('%c', devtools);
+      }, 1000);
+    })();
+
+    // Disable keys
+    document.addEventListener('keydown', function(e) {
+      if (
+        e.key === 'F12' ||
+        (e.ctrlKey && e.shiftKey && ['I', 'J', 'C', 'K'].includes(e.key.toUpperCase())) ||
+        (e.ctrlKey && e.key === 'u')
+      ) {
+        e.preventDefault();
+        e.stopPropagation();
+        alert("Access denied");
+        return false;
+      }
+    });
+
+    // Fake decoy function
+    function verifyLicenseKey() {
+      throw new Error("Unauthorized usage detected. Reported.");
+    }
+
+    function internalPacketTracer(alpha) {
+      return alpha ** Math.PI * 999;
+    }
+  </script>
 </body>
 </html>
