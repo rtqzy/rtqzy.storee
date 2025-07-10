@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>QR Code Generator — Rtqzy Tools</title>
-  <meta name="description" content="Generate custom QR codes instantly with logo, color and PDF export.">
+  <meta name="description" content="Create custom QR codes with color options and PDF download. Watermarked with Rtqzy.store by default." />
+
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/lucide@latest"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.0/build/qrcode.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <style>
@@ -19,20 +19,44 @@
       background-color: #f8fafc;
       color: #0f172a;
     }
-    .glass {
-      backdrop-filter: blur(16px);
-      background: rgba(255, 255, 255, 0.07);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 0 25px rgba(255, 255, 255, 0.05);
-    }
-    html[data-theme='dark'] .glass {
-      background: rgba(30, 41, 59, 0.25);
-      border-color: rgba(255, 255, 255, 0.05);
-    }
     canvas {
-      max-width: 100%;
+      image-rendering: pixelated;
     }
   </style>
+</head>
+<body class="min-h-screen flex flex-col items-center p-6 font-sans">
+
+  <header class="w-full max-w-3xl mx-auto flex justify-between items-center px-6 py-4">
+    <a href="index.html" class="text-2xl font-bold">← Rtqzy Tools</a>
+    <button onclick="toggleTheme()" class="rounded-full p-2 hover:bg-blue-500 hover:text-white transition" id="theme-icon">🌗</button>
+  </header>
+
+  <main class="w-full max-w-md text-center">
+    <h1 class="text-3xl font-bold mt-8 mb-2">QR Code Generator</h1>
+    <p class="text-gray-500 dark:text-gray-400 mb-6">Custom colors & permanent Rtqzy.store watermark</p>
+
+    <input type="text" id="qrInput" placeholder="Enter text or link" class="w-full p-3 border rounded mb-4" />
+
+    <div class="flex gap-4 justify-center mb-4">
+      <label class="text-sm">Foreground
+        <input type="color" id="fgColor" value="#000000" />
+      </label>
+      <label class="text-sm">Background
+        <input type="color" id="bgColor" value="#ffffff" />
+      </label>
+    </div>
+
+    <button onclick="generateQR()" class="px-5 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Generate QR</button>
+    <button onclick="downloadPDF()" class="ml-2 px-5 py-2 bg-green-600 text-white rounded hover:bg-green-700">Download as PDF</button>
+
+    <div class="mt-6">
+      <canvas id="qrCanvas" class="mx-auto"></canvas>
+    </div>
+  </main>
+
+  <footer class="mt-12 text-xs text-gray-500 dark:text-gray-400 text-center">
+    &copy; 2025 Rtqzy.store — QR with style and security
+  </footer>
 
   <script>
     function toggleTheme() {
@@ -40,134 +64,50 @@
       const newTheme = html.dataset.theme === "light" ? "dark" : "light";
       html.dataset.theme = newTheme;
       localStorage.setItem("theme", newTheme);
-      document.getElementById("theme-icon").innerHTML = newTheme === "dark"
-        ? '<i data-lucide="moon"></i>' : '<i data-lucide="sun"></i>';
-      lucide.createIcons();
     }
 
-    window.addEventListener("DOMContentLoaded", () => {
+    window.onload = () => {
       const saved = localStorage.getItem("theme") || "light";
       document.documentElement.dataset.theme = saved;
-      document.getElementById("theme-icon").innerHTML = saved === "dark"
-        ? '<i data-lucide="moon"></i>' : '<i data-lucide="sun"></i>';
-      lucide.createIcons();
-    });
-  </script>
-</head>
-<body class="min-h-screen flex flex-col items-center font-sans p-6">
+    };
 
-  <!-- Header -->
-  <header class="glass w-full max-w-4xl mx-auto flex justify-between items-center px-6 py-4 rounded-xl mt-4">
-    <a href="index.html" class="text-2xl font-bold tracking-tight">← Rtqzy Tools</a>
-    <button onclick="toggleTheme()" class="rounded-full p-2 hover:bg-blue-500 hover:text-white transition" id="theme-icon"></button>
-  </header>
+    function generateQR() {
+      const text = document.getElementById("qrInput").value;
+      const fg = document.getElementById("fgColor").value;
+      const bg = document.getElementById("bgColor").value;
+      const canvas = document.getElementById("qrCanvas");
 
-  <!-- Main -->
-  <main class="w-full max-w-2xl text-center mt-12 space-y-8">
-    <h1 class="text-4xl font-extrabold">QR Code Generator</h1>
-    <p class="text-gray-600 dark:text-gray-300">Customize with colors and logo. Download as PNG or PDF.</p>
+      if (!text) return alert("Enter text or link to generate QR");
 
-    <input id="qr-input" type="text" placeholder="Enter URL or text" class="w-full px-4 py-3 rounded-xl border border-gray-300 dark:border-slate-600 bg-white dark:bg-slate-800 text-lg" />
-
-    <!-- Color Pickers -->
-    <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mt-4">
-      <label class="flex items-center gap-2 text-sm">
-        Foreground: <input type="color" id="fg-color" value="#000000" />
-      </label>
-      <label class="flex items-center gap-2 text-sm">
-        Background: <input type="color" id="bg-color" value="#ffffff" />
-      </label>
-      <label class="flex items-center gap-2 text-sm">
-        Logo: <input type="file" id="logo-upload" accept="image/*" />
-      </label>
-    </div>
-
-    <!-- QR Canvas -->
-    <div class="relative inline-block mt-6">
-      <canvas id="qr-canvas" class="rounded-xl bg-white dark:bg-slate-100 p-2"></canvas>
-      <img id="logo-img" class="absolute w-12 h-12 top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none" style="display:none;" />
-    </div>
-
-    <!-- Buttons -->
-    <div class="flex justify-center gap-4 mt-4">
-      <button onclick="downloadQR()" class="px-4 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition">Download PNG</button>
-      <button onclick="downloadPDF()" class="px-4 py-2 bg-green-600 text-white rounded-full hover:bg-green-700 transition">Download PDF</button>
-    </div>
-  </main>
-
-  <!-- Footer -->
-  <footer class="text-center mt-16 text-xs text-gray-500 dark:text-gray-400">
-    &copy; 2025 Rtqzy.store — Custom QR Generator 🔗
-  </footer>
-
-  <script>
-    const input = document.getElementById('qr-input');
-    const canvas = document.getElementById('qr-canvas');
-    const fgColor = document.getElementById('fg-color');
-    const bgColor = document.getElementById('bg-color');
-    const logoInput = document.getElementById('logo-upload');
-    const logoImg = document.getElementById('logo-img');
-
-    function generateQR(text) {
-      QRCode.toCanvas(canvas, text || 'https://rtqzy.store', {
+      QRCode.toCanvas(canvas, text, {
         color: {
-          dark: fgColor.value,
-          light: bgColor.value
+          dark: fg,
+          light: bg
         },
-        width: 256
-      }, (error) => {
+        margin: 2,
+        scale: 8
+      }, function (error) {
         if (error) console.error(error);
+        addWatermark(canvas);
       });
     }
 
-    function updateQR() {
-      generateQR(input.value);
-    }
-
-    function overlayLogo() {
-      if (!logoImg.src || logoImg.style.display === "none") return;
+    function addWatermark(canvas) {
       const ctx = canvas.getContext("2d");
-      const size = 48;
-      const x = (canvas.width - size) / 2;
-      const y = (canvas.height - size) / 2;
-      ctx.drawImage(logoImg, x, y, size, size);
-    }
-
-    function downloadQR() {
-      overlayLogo();
-      const link = document.createElement('a');
-      link.download = 'qr-code.png';
-      link.href = canvas.toDataURL();
-      link.click();
+      ctx.font = "bold 18px sans-serif";
+      ctx.fillStyle = "#ff0000";
+      ctx.textAlign = "center";
+      ctx.fillText("Rtqzy.store", canvas.width / 2, canvas.height / 2);
     }
 
     async function downloadPDF() {
-      overlayLogo();
+      const canvas = document.getElementById("qrCanvas");
+      const dataUrl = canvas.toDataURL("image/png");
       const { jsPDF } = window.jspdf;
       const pdf = new jsPDF();
-      const imgData = canvas.toDataURL("image/png");
-      pdf.text("QR Code", 10, 10);
-      pdf.addImage(imgData, 'PNG', 10, 20, 80, 80);
-      pdf.save("qr-code.pdf");
+      pdf.addImage(dataUrl, "PNG", 15, 40, 180, 180);
+      pdf.save("rtqzy-qr-code.pdf");
     }
-
-    input.addEventListener('input', updateQR);
-    fgColor.addEventListener('input', updateQR);
-    bgColor.addEventListener('input', updateQR);
-
-    logoInput.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function (evt) {
-        logoImg.src = evt.target.result;
-        logoImg.style.display = 'block';
-        updateQR();
-      };
-      reader.readAsDataURL(file);
-    });
-
-    generateQR('https://rtqzy.store');
   </script>
 </body>
 </html>
