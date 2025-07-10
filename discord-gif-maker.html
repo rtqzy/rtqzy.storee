@@ -1,12 +1,16 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="light" >
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Discord GIF Maker — Rtqzy Tools</title>
-  <meta name="description" content="Create Discord-safe GIFs from videos. Trim, resize, watermark, and export under 8MB.">
+  <meta name="description" content="Create Discord-safe GIFs from videos. Trim, resize, watermark, and export under 8MB." />
+
+  <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
   <script src="https://cdn.jsdelivr.net/npm/lucide@latest"></script>
+  <!-- FFmpeg.wasm -->
   <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.8/dist/ffmpeg.min.js"></script>
 
   <style>
@@ -18,86 +22,219 @@
       background-color: #f8fafc;
       color: #0f172a;
     }
-    .glass {
-      backdrop-filter: blur(16px);
-      background: rgba(255, 255, 255, 0.07);
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      box-shadow: 0 0 25px rgba(255, 255, 255, 0.05);
+    body {
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      max-width: 720px;
+      margin: auto;
     }
-    html[data-theme='dark'] .glass {
-      background: rgba(30, 41, 59, 0.25);
-      border-color: rgba(255, 255, 255, 0.05);
+    header {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    header a {
+      font-weight: 700;
+      font-size: 1.5rem;
+      text-decoration: none;
+      color: inherit;
+    }
+    header button {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-size: 1.25rem;
+      padding: 0.4rem;
+      border-radius: 50%;
+      transition: background-color 0.3s ease;
+    }
+    header button:hover,
+    header button:focus {
+      background-color: #2563eb; /* Tailwind blue-600 */
+      color: white;
+      outline: none;
+    }
+    main {
+      width: 100%;
+      background: rgba(255 255 255 / 0.07);
+      backdrop-filter: blur(16px);
+      border-radius: 1rem;
+      padding: 2rem;
+      box-shadow: 0 8px 24px rgb(0 0 0 / 0.1);
+      color: inherit;
+    }
+    h1 {
+      font-weight: 900;
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    p.description {
+      text-align: center;
+      color: #6b7280; /* Tailwind gray-500 */
+      margin-bottom: 2rem;
+    }
+    label {
+      display: flex;
+      flex-direction: column;
+      font-weight: 600;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
+      color: inherit;
+    }
+    input[type="file"],
+    input[type="number"],
+    select {
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+      border: 1px solid #d1d5db; /* Tailwind gray-300 */
+      font-size: 1rem;
+      margin-top: 0.25rem;
+    }
+    input[type="number"] {
+      max-width: 100px;
+    }
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+    button.convert-btn {
+      background-color: #2563eb;
+      color: white;
+      font-weight: 700;
+      padding: 0.75rem 1.5rem;
+      border-radius: 9999px;
+      cursor: pointer;
+      border: none;
+      transition: background-color 0.3s ease;
+      width: 100%;
+      max-width: 240px;
+      margin: 0 auto;
+      display: block;
+    }
+    button.convert-btn:disabled {
+      background-color: #93c5fd;
+      cursor: not-allowed;
+    }
+    button.convert-btn:hover:not(:disabled) {
+      background-color: #1e40af;
+    }
+
+    /* Loader bar */
+    #loader {
+      width: 100%;
+      height: 6px;
+      background-color: #e5e7eb; /* gray-200 */
+      border-radius: 9999px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+      display: none;
+      position: relative;
+    }
+    #progressBar {
+      background-color: #2563eb;
+      height: 100%;
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* Status text */
+    #statusText {
+      text-align: center;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      min-height: 1.2rem;
+      color: #2563eb;
+    }
+
+    /* Video preview */
+    #preview {
+      max-width: 100%;
+      border-radius: 1rem;
+      box-shadow: 0 0 12px rgb(37 99 235 / 0.4);
+      display: none;
+      margin-bottom: 1rem;
+    }
+    #downloadLink {
+      display: none;
+      text-align: center;
+      color: #2563eb;
+      font-weight: 600;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+
+    @media (min-width: 640px) {
+      .controls {
+        justify-content: space-between;
+      }
+      input[type="number"] {
+        max-width: 140px;
+      }
     }
   </style>
-
-  <script>
-    function toggleTheme() {
-      const html = document.documentElement;
-      const newTheme = html.dataset.theme === "light" ? "dark" : "light";
-      html.dataset.theme = newTheme;
-      localStorage.setItem("theme", newTheme);
-      document.getElementById("theme-icon").innerHTML = newTheme === "dark"
-        ? '<i data-lucide="moon"></i>' : '<i data-lucide="sun"></i>';
-      lucide.createIcons();
-    }
-
-    window.addEventListener("DOMContentLoaded", () => {
-      const saved = localStorage.getItem("theme") || "light";
-      document.documentElement.dataset.theme = saved;
-      document.getElementById("theme-icon").innerHTML = saved === "dark"
-        ? '<i data-lucide="moon"></i>' : '<i data-lucide="sun"></i>';
-      lucide.createIcons();
-    });
-  </script>
 </head>
-<body class="min-h-screen flex flex-col items-center font-sans p-6">
+<body>
 
-  <!-- Header -->
-  <header class="glass w-full max-w-4xl mx-auto flex justify-between items-center px-6 py-4 rounded-xl mt-4">
-    <a href="index.html" class="text-2xl font-bold tracking-tight">← Rtqzy Tools</a>
-    <button onclick="toggleTheme()" class="rounded-full p-2 hover:bg-blue-500 hover:text-white transition" id="theme-icon"></button>
+  <header>
+    <a href="index.html" aria-label="Back to Rtqzy Tools homepage">← Rtqzy Tools</a>
+    <button onclick="toggleTheme()" aria-label="Toggle dark/light theme" id="theme-icon"></button>
   </header>
 
-  <!-- Main Content -->
-  <main class="w-full max-w-2xl mt-12 space-y-6 text-center">
-    <h1 class="text-4xl font-extrabold">Discord GIF Maker</h1>
-    <p class="text-gray-600 dark:text-gray-300">Upload a video or GIF, trim it, resize it, and add watermark under 8MB!</p>
+  <main>
+    <h1>Discord GIF Maker</h1>
+    <p class="description">Upload a video or GIF, trim & resize, and export with an unremovable Rtqzy.store watermark.</p>
 
-    <input type="file" id="videoInput" accept="video/*,image/gif" class="mt-4" />
+    <label for="videoInput">Select Video or GIF</label>
+    <input type="file" id="videoInput" accept="video/*,image/gif" />
 
-    <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mt-6">
-      <label>Start (s): <input type="number" id="startTime" min="0" value="0" class="w-20 p-1 rounded border" /></label>
-      <label>End (s): <input type="number" id="endTime" min="1" value="5" class="w-20 p-1 rounded border" /></label>
-      <label>Size:
-        <select id="resolution" class="p-1 rounded border">
+    <div class="controls">
+      <label>
+        Start (seconds)
+        <input type="number" id="startTime" min="0" value="0" />
+      </label>
+      <label>
+        End (seconds)
+        <input type="number" id="endTime" min="1" value="5" />
+      </label>
+      <label>
+        Resolution
+        <select id="resolution">
           <option value="360">360p</option>
           <option value="480">480p</option>
         </select>
       </label>
-      <label>Format:
-        <select id="format" class="p-1 rounded border">
+      <label>
+        Format
+        <select id="format">
           <option value="mp4">MP4</option>
           <option value="gif">GIF</option>
         </select>
       </label>
     </div>
 
-    <button id="convertBtn" class="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition mt-6">Convert</button>
+    <button id="convertBtn" class="convert-btn">Convert</button>
 
-    <!-- Progress bar -->
-    <div id="loader" class="w-full mt-4 hidden">
-      <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
-        <div id="progressBar" class="bg-blue-600 h-2.5 rounded-full transition-all duration-300 ease-in-out" style="width: 0%"></div>
-      </div>
-      <p class="text-sm mt-2 text-gray-500 dark:text-gray-400">Processing... please wait.</p>
+    <div id="loader">
+      <div id="progressBar"></div>
     </div>
 
-    <video id="preview" controls class="w-full mt-6 rounded-xl hidden"></video>
-    <a id="downloadLink" class="mt-4 text-blue-600 underline hidden" download>Download</a>
+    <div id="statusText" role="status" aria-live="polite"></div>
+
+    <video id="preview" controls></video>
+    <a id="downloadLink" download>Download output</a>
   </main>
 
-  <!-- Footer -->
-  <footer class="text-center mt-16 text-xs text-gray-500 dark:text-gray-400">
+  <footer style="text-align:center; margin-top:3rem; font-size:0.75rem; color:#666;">
     &copy; 2025 Rtqzy.store — GIFs that hit just right 🎞️
   </footer>
 
@@ -107,12 +244,38 @@
     const convertBtn = document.getElementById("convertBtn");
     const loader = document.getElementById("loader");
     const progressBar = document.getElementById("progressBar");
+    const statusText = document.getElementById("statusText");
     const preview = document.getElementById("preview");
     const downloadLink = document.getElementById("downloadLink");
 
     ffmpeg.setProgress(({ ratio }) => {
-      loader.classList.remove("hidden");
-      progressBar.style.width = Math.round(ratio * 100) + "%";
+      loader.style.display = 'block';
+      progressBar.style.width = `${Math.round(ratio * 100)}%`;
+      statusText.textContent = `Processing... ${Math.round(ratio * 100)}%`;
+    });
+
+    ffmpeg.setLogger(({ message }) => {
+      console.log("FFmpeg:", message);
+    });
+
+    function toggleTheme() {
+      const html = document.documentElement;
+      const newTheme = html.dataset.theme === "light" ? "dark" : "light";
+      html.dataset.theme = newTheme;
+      localStorage.setItem("theme", newTheme);
+      document.getElementById("theme-icon").innerHTML = newTheme === "dark"
+        ? '<i data-lucide="moon"></i>'
+        : '<i data-lucide="sun"></i>';
+      lucide.createIcons();
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const saved = localStorage.getItem("theme") || "light";
+      document.documentElement.dataset.theme = saved;
+      document.getElementById("theme-icon").innerHTML = saved === "dark"
+        ? '<i data-lucide="moon"></i>'
+        : '<i data-lucide="sun"></i>';
+      lucide.createIcons();
     });
 
     convertBtn.addEventListener("click", async () => {
@@ -122,50 +285,68 @@
       const resolution = document.getElementById("resolution").value;
       const format = document.getElementById("format").value;
 
-      if (!file || isNaN(start) || isNaN(end) || end <= start) {
-        alert("Please upload a file and enter valid trim times.");
+      if (!file) {
+        alert("Please select a video or GIF file.");
+        return;
+      }
+      if (isNaN(start) || isNaN(end) || end <= start) {
+        alert("Please enter valid start and end times.");
         return;
       }
 
-      convertBtn.innerText = "Processing...";
       convertBtn.disabled = true;
-      progressBar.style.width = "0%";
-      loader.classList.remove("hidden");
+      convertBtn.textContent = "Processing...";
+      preview.style.display = "none";
+      downloadLink.style.display = "none";
+      statusText.textContent = "";
 
-      if (!ffmpeg.isLoaded()) await ffmpeg.load();
+      if (!ffmpeg.isLoaded()) {
+        statusText.textContent = "Loading FFmpeg core...";
+        await ffmpeg.load();
+      }
 
-      const inputName = "input." + file.name.split('.').pop();
-      const outputName = `output.${format}`;
-      ffmpeg.FS("writeFile", inputName, await fetchFile(file));
+      try {
+        const inputExt = file.name.split('.').pop();
+        const inputName = `input.${inputExt}`;
+        const outputName = `output.${format}`;
 
-      // Watermark text filter
-      const watermarkFilter = `drawtext=text='Rtqzy.store':fontcolor=white:fontsize=24:x=(w-text_w)/2:y=h-40`;
+        ffmpeg.FS("writeFile", inputName, await fetchFile(file));
 
-      await ffmpeg.run(
-        "-i", inputName,
-        "-ss", `${start}`,
-        "-t", `${end - start}`,
-        "-vf", `scale=-2:${resolution},${watermarkFilter}`,
-        "-c:v", format === "gif" ? "gif" : "libx264",
-        "-preset", "ultrafast",
-        "-crf", "28",
-        "-movflags", "+faststart",
-        outputName
-      );
+        // Watermark filter: text at bottom center, white, semi-transparent shadow
+        const watermarkFilter = `drawtext=text='Rtqzy.store':fontcolor=white@0.9:fontsize=24:shadowcolor=black@0.6:shadowx=2:shadowy=2:x=(w-text_w)/2:y=h-text_h-20`;
 
-      const data = ffmpeg.FS("readFile", outputName);
-      const blob = new Blob([data.buffer], { type: format === "gif" ? "image/gif" : "video/mp4" });
-      const url = URL.createObjectURL(blob);
+        await ffmpeg.run(
+          "-i", inputName,
+          "-ss", `${start}`,
+          "-t", `${end - start}`,
+          "-vf", `scale=-2:${resolution},${watermarkFilter}`,
+          "-c:v", format === "gif" ? "gif" : "libx264",
+          "-preset", "ultrafast",
+          "-crf", "28",
+          "-movflags", "+faststart",
+          outputName
+        );
 
-      preview.src = url;
-      preview.classList.remove("hidden");
-      downloadLink.href = url;
-      downloadLink.download = `discord-output.${format}`;
-      downloadLink.classList.remove("hidden");
+        const data = ffmpeg.FS("readFile", outputName);
+        const blob = new Blob([data.buffer], { type: format === "gif" ? "image/gif" : "video/mp4" });
+        const url = URL.createObjectURL(blob);
 
-      convertBtn.innerText = "Convert";
-      convertBtn.disabled = false;
-      loader.classList.add("hidden");
+        preview.src = url;
+        preview.style.display = "block";
+        downloadLink.href = url;
+        downloadLink.download = `discord-output.${format}`;
+        downloadLink.style.display = "block";
+        statusText.textContent = "Conversion complete!";
+
+      } catch (e) {
+        console.error(e);
+        statusText.textContent = "An error occurred. Please try again.";
+      } finally {
+        convertBtn.disabled = false;
+        convertBtn.textContent = "Convert";
+        loader.style.display = "none";
+        progressBar.style.width = "0%";
+      }
     });
   </script>
 </body>
