@@ -14,6 +14,30 @@
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <script>
+    // User tracking in localStorage
+    function generateUUID() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        let r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+      });
+    }
+
+    function getUserID() {
+      let id = localStorage.getItem('rtqzy_user_id');
+      if (!id) {
+        id = generateUUID();
+        localStorage.setItem('rtqzy_user_id', id);
+      }
+      return id;
+    }
+
+    function logUsage(tool) {
+      const id = getUserID();
+      const usageLog = JSON.parse(localStorage.getItem('rtqzy_usage_log') || '[]');
+      usageLog.push({ user: id, tool, timestamp: new Date().toISOString() });
+      localStorage.setItem('rtqzy_usage_log', JSON.stringify(usageLog));
+    }
+
     function toggleTheme() {
       const html = document.documentElement;
       const newTheme = html.dataset.theme === "light" ? "dark" : "light";
@@ -28,6 +52,9 @@
       document.documentElement.dataset.theme = saved;
       document.getElementById("theme-icon").innerHTML = saved === "dark" ? '<i data-lucide="moon"></i>' : '<i data-lucide="sun"></i>';
       lucide.createIcons();
+
+      // Track index page visit
+      logUsage('index');
 
       const toolCount = 1064012 + Math.floor(Math.random() * 1000);
       document.getElementById("tool-counter").textContent = toolCount.toLocaleString();
@@ -94,37 +121,37 @@
 
   <!-- Tool Cards -->
   <main class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-6 pb-16">
-    <a href="image-converter.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
+    <a href="image-converter.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center" onclick="logUsage('image-converter')">
       <div class="text-blue-500 mb-3" data-lucide="image" style="width: 36px; height: 36px;"></div>
       <h3 class="text-xl font-semibold">Image Converter</h3>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">JPG ↔ PNG, WebP, more</p>
     </a>
 
-    <a href="yt-downloader.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
+    <a href="yt-downloader.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center" onclick="logUsage('yt-downloader')">
       <div class="text-red-500 mb-3" data-lucide="youtube" style="width: 36px; height: 36px;"></div>
       <h3 class="text-xl font-semibold">YouTube to MP3/MP4</h3>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Download videos easily</p>
     </a>
 
-    <a href="pdf-tools.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
+    <a href="pdf-tools.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center" onclick="logUsage('pdf-tools')">
       <div class="text-purple-500 mb-3" data-lucide="file-text" style="width: 36px; height: 36px;"></div>
       <h3 class="text-xl font-semibold">PDF Tools</h3>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Merge, split, compress</p>
     </a>
 
-    <a href="qr-maker.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
+    <a href="qr-maker.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center" onclick="logUsage('qr-maker')">
       <div class="text-green-500 mb-3" data-lucide="qrcode" style="width: 36px; height: 36px;"></div>
       <h3 class="text-xl font-semibold">QR Code Generator</h3>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Custom QR to any link</p>
     </a>
 
-    <a href="discord-gif-maker.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
+    <a href="discord-gif-maker.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center" onclick="logUsage('discord-gif-maker')">
       <div class="text-pink-500 mb-3" data-lucide="film" style="width: 36px; height: 36px;"></div>
       <h3 class="text-xl font-semibold">Discord GIF Maker</h3>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Safe GIFs, resize & trim</p>
     </a>
 
-    <a href="link-shortener.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
+    <a href="link-shortener.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center" onclick="logUsage('link-shortener')">
       <div class="text-amber-500 mb-3" data-lucide="link" style="width: 36px; height: 36px;"></div>
       <h3 class="text-xl font-semibold">Link Shortener</h3>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Easy to share URLs</p>
