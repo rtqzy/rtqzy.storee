@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Discord GIF Maker — Rtqzy Tools</title>
+  <meta name="description" content="Create Discord-safe GIFs from videos. Trim, resize, watermark, and export under 8MB.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.11.8/dist/ffmpeg.min.js"></script>
+
+  <style>
+    html[data-theme='dark'] {
+      background-color: #0f172a;
+      color: #f1f5f9;
+    }
+    html[data-theme='light'] {
+      background-color: #f8fafc;
+      color: #0f172a;
+    }
+    .glass {
+      backdrop-filter: blur(16px);
+      background: rgba(255, 255, 255, 0.07);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.05);
+    }
+    html[data-theme='dark'] .glass {
+      background: rgba(30, 41, 59, 0.25);
+      border-color: rgba(255, 255, 255, 0.05);
+    }
+  </style>
+
+  <script>
+    function toggleTheme() {
+      const html = document.documentElement;
+      const newTheme = html.dataset.theme === "light" ? "dark" : "light";
+      html.dataset.theme = newTheme;
+      localStorage.setItem("theme", newTheme);
+      document.getElementById("theme-icon").innerHTML = newTheme === "dark"
+        ? '<i data-lucide="moon"></i>' : '<i data-lucide="sun"></i>';
+      lucide.createIcons();
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      const saved = localStorage.getItem("theme") || "light";
+      document.documentElement.dataset.theme = saved;
+      document.getElementById("theme-icon").innerHTML = saved === "dark"
+        ? '<i data-lucide="moon"></i>' : '<i data-lucide="sun"></i>';
+      lucide.createIcons();
+    });
+  </script>
+</head>
+<body class="min-h-screen flex flex-col items-center font-sans p-6">
+
+  <!-- Header -->
+  <header class="glass w-full max-w-4xl mx-auto flex justify-between items-center px-6 py-4 rounded-xl mt-4">
+    <a href="index.html" class="text-2xl font-bold tracking-tight">← Rtqzy Tools</a>
+    <button onclick="toggleTheme()" class="rounded-full p-2 hover:bg-blue-500 hover:text-white transition" id="theme-icon"></button>
+  </header>
+
+  <!-- Main Content -->
+  <main class="w-full max-w-2xl mt-12 space-y-6 text-center">
+    <h1 class="text-4xl font-extrabold">Discord GIF Maker</h1>
+    <p class="text-gray-600 dark:text-gray-300">Upload a video or GIF, trim it, resize it, and add watermark under 8MB!</p>
+
+    <input type="file" id="videoInput" accept="video/*,image/gif" class="mt-4" />
+
+    <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mt-6">
+      <label>Start (s): <input type="number" id="startTime" min="0" value="0" class="w-20 p-1 rounded border" /></label>
+      <label>End (s): <input type="number" id="endTime" min="1" value="5" class="w-20 p-1 rounded border" /></label>
+      <label>Size:
+        <select id="resolution" class="p-1 rounded border">
+          <option value="360">360p</option>
+          <option value="480">480p</option>
+        </select>
+      </label>
+      <label>Format:
+        <select id="format" class="p-1 rounded border">
+          <option value="mp4">MP4</option>
+          <option value="gif">GIF</option>
+        </select>
+      </label>
+    </div>
+
+    <button id="convertBtn" class="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition mt-6">Convert</button>
+
+    <!-- Progress bar -->
+    <div id="loader" class="w-full mt-4 hidden">
+      <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+        <div id="progressBar" class="bg-blue-600 h-2.5 rounded-full transition-all duration-300 ease-in-out" style="width: 0%"></div>
+      </div>
+      <p class="text-sm mt-2 text-gray-500 dark:text-gray-400">Processing... please wait.</p>
+    </div>
+
+    <video id="preview" controls class="w-full mt-6 rounded-xl hidden"></video>
+    <a id="downloadLink" class="mt-4 text-blue-600 underline hidden" download>Download</a>
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center mt-16 text-xs text-gray-500 dark:text-gray-400">
+    &copy; 2025 Rtqzy.store — GIFs that hit just right 🎞️
+  </footer>
+
+  <script>
+    const { createFFmpeg, fetchFile } = FFmpeg;
+    const ffmpeg = createFFmpeg({ log: true });
+    const convertBtn = document.getElementById("convertBtn");
+    const loader = document.getElementById("loader");
+    const progressBar = document.getElementById("progressBar");
+    const preview = document.getElementById("preview");
+    const downloadLink = document.getElementById("downloadLink");
+
+    ffmpeg.setProgress(({ ratio }) => {
+      loader.classList.remove("hidden");
+      progressBar.style.width = Math.round(ratio * 100) + "%";
+    });
+
+    convertBtn.addEventListener("click", async () => {
+      const file = document.getElementById("videoInput").files[0];
+      const start = parseFloat(document.getElementById("startTime").value);
+      const end = parseFloat(document.getElementById("endTime").value);
+      const resolution = document.getElementById("resolution").value;
+      const format = document.getElementById("format").value;
+
+      if (!file || isNaN(start) || isNaN(end) || end <= start) {
+        alert("Please upload a file and enter valid trim times.");
+        return;
+      }
+
+      convertBtn.innerText = "Processing...";
+      convertBtn.disabled = true;
+      progressBar.style.width = "0%";
+      loader.classList.remove("hidden");
+
+      if (!ffmpeg.isLoaded()) await ffmpeg.load();
+
+      const inputName = "input." + file.name.split('.').pop();
+      const outputName = `output.${format}`;
+      ffmpeg.FS("writeFile", inputName, await fetchFile(file));
+
+      // Watermark text filter
+      const watermarkFilter = `drawtext=text='Rtqzy.store':fontcolor=white:fontsize=24:x=(w-text_w)/2:y=h-40`;
+
+      await ffmpeg.run(
+        "-i", inputName,
+        "-ss", `${start}`,
+        "-t", `${end - start}`,
+        "-vf", `scale=-2:${resolution},${watermarkFilter}`,
+        "-c:v", format === "gif" ? "gif" : "libx264",
+        "-preset", "ultrafast",
+        "-crf", "28",
+        "-movflags", "+faststart",
+        outputName
+      );
+
+      const data = ffmpeg.FS("readFile", outputName);
+      const blob = new Blob([data.buffer], { type: format === "gif" ? "image/gif" : "video/mp4" });
+      const url = URL.createObjectURL(blob);
+
+      preview.src = url;
+      preview.classList.remove("hidden");
+      downloadLink.href = url;
+      downloadLink.download = `discord-output.${format}`;
+      downloadLink.classList.remove("hidden");
+
+      convertBtn.innerText = "Convert";
+      convertBtn.disabled = false;
+      loader.classList.add("hidden");
+    });
+  </script>
+</body>
+</html>
