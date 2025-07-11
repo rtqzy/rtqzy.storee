@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Rtqzy Tools — Free Online Converters</title>
-  <meta name="description" content="Free, modern tools to convert images, YouTube to MP3, merge PDFs, create QR codes, shorten links, and more. Built for performance, privacy, and passive income." />
-  <meta name="keywords" content="image converter, YouTube downloader, PDF merge, QR code, GIF maker, link shortener, free tools" />
-  <meta name="author" content="Rtqzy" />
+  <meta name="description" content="Free, modern tools to convert images, YouTube to MP3, merge PDFs, create QR codes, shorten links, and more. Built for performance, privacy, and passive income.">
+  <meta name="keywords" content="image converter, YouTube downloader, PDF merge, QR code, GIF maker, link shortener, free tools">
+  <meta name="author" content="Rtqzy">
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -27,7 +27,6 @@
       background: rgba(255, 255, 255, 0.07);
       border: 1px solid rgba(255, 255, 255, 0.15);
       box-shadow: 0 0 25px rgba(255, 255, 255, 0.05);
-      cursor: pointer;
     }
     html[data-theme='dark'] .glass {
       background: rgba(30, 41, 59, 0.25);
@@ -37,14 +36,12 @@
 </head>
 <body class="min-h-screen flex flex-col font-sans transition duration-300 ease-in-out" oncontextmenu="return false">
 
-  <!-- Banner Ad Placement -->
-  <div class="w-full text-center py-2 bg-yellow-100 text-yellow-800 font-bold">
-    <!-- INSERT YOUR MONETAG BANNER SCRIPT HERE -->
-  </div>
+  <!-- Force ad when user first loads site -->
+  <script>(function(d,z,s){s.src='https://'+d+'/401/'+z;try{(document.body||document.documentElement).appendChild(s)}catch(e){}})('groleegni.net',9556953,document.createElement('script'))</script>
 
   <header class="glass flex justify-between items-center px-6 py-4 sticky top-0 z-40">
     <div class="text-2xl font-bold tracking-tight">Rtqzy Tools</div>
-    <button onclick="toggleTheme()" class="rounded-full p-2 hover:bg-blue-500 hover:text-white transition" id="theme-icon" aria-label="Toggle theme"></button>
+    <button onclick="toggleTheme()" class="rounded-full p-2 hover:bg-blue-500 hover:text-white transition" id="theme-icon"></button>
   </header>
 
   <section class="text-center py-12 px-4">
@@ -53,40 +50,41 @@
   </section>
 
   <main class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-6 pb-16">
-    <div class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center" onclick="redirectWithAd('go.html?tool=image-converter.html')">
+    <a href="go.html?tool=image-converter.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
       <div class="text-blue-500 mb-3" data-lucide="image" style="width: 36px; height: 36px;"></div>
       <h3 class="text-xl font-semibold">Image Converter</h3>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">JPG ↔ PNG, WebP, more</p>
-    </div>
-    <div class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center" onclick="redirectWithAd('go.html?tool=yt-downloader.html')">
+    </a>
+    <a href="go.html?tool=yt-downloader.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
       <div class="text-red-500 mb-3" data-lucide="youtube" style="width: 36px; height: 36px;"></div>
       <h3 class="text-xl font-semibold">YouTube to MP3/MP4</h3>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Download videos easily</p>
-    </div>
-    <div class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center" onclick="redirectWithAd('go.html?tool=pdf-tools.html')">
+    </a>
+    <a href="go.html?tool=pdf-tools.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
       <div class="text-purple-500 mb-3" data-lucide="file-text" style="width: 36px; height: 36px;"></div>
       <h3 class="text-xl font-semibold">PDF Tools</h3>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Merge, split, compress</p>
-    </div>
-    <div class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center" onclick="redirectWithAd('go.html?tool=qr-maker.html')">
+    </a>
+    <a href="go.html?tool=qr-maker.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
       <div class="text-green-500 mb-3" data-lucide="qrcode" style="width: 36px; height: 36px;"></div>
       <h3 class="text-xl font-semibold">QR Code Generator</h3>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Custom QR to any link</p>
-    </div>
-    <div class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center" onclick="redirectWithAd('go.html?tool=discord-gif-maker.html')">
+    </a>
+    <a href="go.html?tool=discord-gif-maker.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
       <div class="text-pink-500 mb-3" data-lucide="film" style="width: 36px; height: 36px;"></div>
       <h3 class="text-xl font-semibold">Discord GIF Maker</h3>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Safe GIFs, resize & trim</p>
-    </div>
-    <div class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center" onclick="redirectWithAd('go.html?tool=link-shortener.html')">
+    </a>
+    <a href="go.html?tool=link-shortener.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
       <div class="text-amber-500 mb-3" data-lucide="link" style="width: 36px; height: 36px;"></div>
       <h3 class="text-xl font-semibold">Link Shortener</h3>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Easy to share URLs</p>
-    </div>
+    </a>
   </main>
 
   <footer class="text-center py-6 text-xs text-gray-500 dark:text-gray-400">
-    &copy; 2025 <a href="admin.html" class="hover:underline hover:text-blue-500 transition">Rtqzy.store</a> — Built for creators, powered by clicks 💼
+    &copy; 2025 <a href="admin.html" class="hover:underline hover:text-blue-500 transition">Rtqzy.store</a> — Built for creators, powered by clicks 💼<br>
+    <!-- BANNER AD GOES HERE -->
   </footer>
 
   <script>
@@ -95,30 +93,16 @@
       const newTheme = html.dataset.theme === "light" ? "dark" : "light";
       html.dataset.theme = newTheme;
       localStorage.setItem("theme", newTheme);
-      document.getElementById("theme-icon").innerHTML = newTheme === "dark"
-        ? '<i data-lucide="moon"></i>'
-        : '<i data-lucide="sun"></i>';
-      if (window.lucide) lucide.createIcons();
+      document.getElementById("theme-icon").innerHTML = newTheme === "dark" ? '<i data-lucide="moon"></i>' : '<i data-lucide="sun"></i>';
+      lucide.createIcons();
     }
 
     document.addEventListener("DOMContentLoaded", () => {
       const saved = localStorage.getItem("theme") || "light";
       document.documentElement.dataset.theme = saved;
-      document.getElementById("theme-icon").innerHTML = saved === "dark"
-        ? '<i data-lucide="moon"></i>'
-        : '<i data-lucide="sun"></i>';
-      if (window.lucide) lucide.createIcons();
+      document.getElementById("theme-icon").innerHTML = saved === "dark" ? '<i data-lucide="moon"></i>' : '<i data-lucide="sun"></i>';
+      lucide.createIcons();
     });
-
-    function redirectWithAd(url) {
-      const ad = document.createElement('script');
-      ad.src = 'https://groleegni.net/401/9556953';
-      ad.async = true;
-      document.body.appendChild(ad);
-      setTimeout(() => {
-        window.location.href = url;
-      }, 100); // short delay so script fires
-    }
   </script>
 </body>
 </html>
