@@ -27,14 +27,11 @@
       background: rgba(255, 255, 255, 0.07);
       border: 1px solid rgba(255, 255, 255, 0.15);
       box-shadow: 0 0 25px rgba(255, 255, 255, 0.05);
+      cursor: pointer;
     }
     html[data-theme='dark'] .glass {
       background: rgba(30, 41, 59, 0.25);
       border-color: rgba(255, 255, 255, 0.05);
-    }
-    /* Cursor pointer for cards */
-    .glass {
-      cursor: pointer;
     }
   </style>
 </head>
@@ -43,8 +40,6 @@
   <!-- Banner Ad Placement -->
   <div class="w-full text-center py-2 bg-yellow-100 text-yellow-800 font-bold">
     <!-- INSERT YOUR MONETAG BANNER SCRIPT HERE -->
-    <!-- Example: -->
-    <!-- <script src="https://groleegni.net/401/9556953"></script> -->
   </div>
 
   <header class="glass flex justify-between items-center px-6 py-4 sticky top-0 z-40">
@@ -58,55 +53,36 @@
   </section>
 
   <main class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-6 pb-16">
-
-    <div class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center"
-         onclick="playAdThenGo('go.html?tool=image-converter.html')"
-         role="link" tabindex="0" aria-label="Image Converter">
+    <div class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center" onclick="redirectWithAd('go.html?tool=image-converter.html')">
       <div class="text-blue-500 mb-3" data-lucide="image" style="width: 36px; height: 36px;"></div>
       <h3 class="text-xl font-semibold">Image Converter</h3>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">JPG ↔ PNG, WebP, more</p>
     </div>
-
-    <div class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center"
-         onclick="playAdThenGo('go.html?tool=yt-downloader.html')"
-         role="link" tabindex="0" aria-label="YouTube to MP3/MP4">
+    <div class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center" onclick="redirectWithAd('go.html?tool=yt-downloader.html')">
       <div class="text-red-500 mb-3" data-lucide="youtube" style="width: 36px; height: 36px;"></div>
       <h3 class="text-xl font-semibold">YouTube to MP3/MP4</h3>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Download videos easily</p>
     </div>
-
-    <div class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center"
-         onclick="playAdThenGo('go.html?tool=pdf-tools.html')"
-         role="link" tabindex="0" aria-label="PDF Tools">
+    <div class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center" onclick="redirectWithAd('go.html?tool=pdf-tools.html')">
       <div class="text-purple-500 mb-3" data-lucide="file-text" style="width: 36px; height: 36px;"></div>
       <h3 class="text-xl font-semibold">PDF Tools</h3>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Merge, split, compress</p>
     </div>
-
-    <div class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center"
-         onclick="playAdThenGo('go.html?tool=qr-maker.html')"
-         role="link" tabindex="0" aria-label="QR Code Generator">
+    <div class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center" onclick="redirectWithAd('go.html?tool=qr-maker.html')">
       <div class="text-green-500 mb-3" data-lucide="qrcode" style="width: 36px; height: 36px;"></div>
       <h3 class="text-xl font-semibold">QR Code Generator</h3>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Custom QR to any link</p>
     </div>
-
-    <div class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center"
-         onclick="playAdThenGo('go.html?tool=discord-gif-maker.html')"
-         role="link" tabindex="0" aria-label="Discord GIF Maker">
+    <div class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center" onclick="redirectWithAd('go.html?tool=discord-gif-maker.html')">
       <div class="text-pink-500 mb-3" data-lucide="film" style="width: 36px; height: 36px;"></div>
       <h3 class="text-xl font-semibold">Discord GIF Maker</h3>
-      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Safe GIFs, resize &amp; trim</p>
+      <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Safe GIFs, resize & trim</p>
     </div>
-
-    <div class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center"
-         onclick="playAdThenGo('go.html?tool=link-shortener.html')"
-         role="link" tabindex="0" aria-label="Link Shortener">
+    <div class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center" onclick="redirectWithAd('go.html?tool=link-shortener.html')">
       <div class="text-amber-500 mb-3" data-lucide="link" style="width: 36px; height: 36px;"></div>
       <h3 class="text-xl font-semibold">Link Shortener</h3>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Easy to share URLs</p>
     </div>
-
   </main>
 
   <footer class="text-center py-6 text-xs text-gray-500 dark:text-gray-400">
@@ -114,7 +90,6 @@
   </footer>
 
   <script>
-    // Theme toggle
     function toggleTheme() {
       const html = document.documentElement;
       const newTheme = html.dataset.theme === "light" ? "dark" : "light";
@@ -135,29 +110,15 @@
       if (window.lucide) lucide.createIcons();
     });
 
-    // Forced Monetag ad function with callback on close (pressing X)
-    function playAdThenGo(url) {
-      // Create the ad script element
-      const adScript = document.createElement('script');
-      // Monetag forced ad URL
-      adScript.src = 'https://groleegni.net/401/9556953';
-      adScript.async = true;
-
-      // Setup a listener for the global function Monetag uses to close ad (this is a guess, you may want to confirm)
-      // Monetag typically calls window.closeAd or similar on ad close, so we can override it here:
-      window.closeAd = function() {
-        // Remove ad script to clean up
-        if (adScript.parentNode) adScript.parentNode.removeChild(adScript);
-        // Remove this function from window to prevent memory leaks
-        delete window.closeAd;
-        // Redirect to tool url
+    function redirectWithAd(url) {
+      const ad = document.createElement('script');
+      ad.src = 'https://groleegni.net/401/9556953';
+      ad.async = true;
+      document.body.appendChild(ad);
+      setTimeout(() => {
         window.location.href = url;
-      };
-
-      // Append the ad script to body to trigger the ad
-      (document.body || document.documentElement).appendChild(adScript);
+      }, 100); // short delay so script fires
     }
   </script>
-
 </body>
 </html>
