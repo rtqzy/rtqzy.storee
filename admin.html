@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      background-color: #0f172a;
+      color: #f1f5f9;
+      font-family: sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      flex-direction: column;
+    }
+    #admin-interface { display: none; max-width: 800px; width: 100%; }
+    input {
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+      margin-right: 10px;
+    }
+    button {
+      padding: 10px 20px;
+      background-color: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 5px;
+    }
+    .fake-log {
+      margin-top: 20px;
+      font-size: 0.75rem;
+      color: #94a3b8;
+      font-family: monospace;
+    }
+    .tool-usage, .real-logs {
+      background: #1e293b;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 8px;
+    }
+    canvas { background: white; border-radius: 8px; padding: 10px; }
+  </style>
+  <script src="rtqzy.js" defer></script>
+</head>
+<body oncontextmenu="return false">
+  <div id="login">
+    <input type="password" id="pass" placeholder="Enter admin password...">
+    <button onclick="check()">Access</button>
+    <div id="msg"></div>
+    <div class="fake-log" id="fake-log"></div>
+  </div>
+
+  <div id="admin-interface">
+    <h1>Admin Panel</h1>
+    <p>Welcome to the secured Rtqzy admin interface.</p>
+
+    <div class="tool-usage">
+      <h3>Tool Usage Summary</h3>
+      <ul id="tool-stats"></ul>
+      <canvas id="toolChart" width="400" height="200"></canvas>
+    </div>
+
+    <div class="real-logs">
+      <h3>Real-Time Logs</h3>
+      <ul id="log-feed" style="font-size: 0.8rem;"></ul>
+    </div>
+
+    <div>
+      <button onclick="clearLogs()">🧼 Clear Logs</button>
+      <button onclick="resetUsage()">🔄 Reset Usage</button>
+      <button onclick="exportCSV()">📥 Export Stats</button>
+      <button onclick="lockTools()">🔒 Emergency Lockdown</button>
+      <button onclick="toggleVisibility()">👁️ Toggle Tools</button>
+    </div>
+  </div>
+
+  <script>
+    const secret = 'Z9h3F@7jKx8vQ#L2%wYmB7$gR4uHt93eTf2LpQnVcXsMd1Zj!Ao5N';
+    const tools = ['Image Converter','YouTube Downloader','PDF Tools','QR Generator','GIF Maker','Link Shortener'];
+    let logs = JSON.parse(localStorage.getItem('adminLogs') || '[]');
+    let usage = JSON.parse(localStorage.getItem('toolUsage') || '{}');
+
+    function check() {
+      const input = document.getElementById('pass').value;
+      if (input === secret) {
+        document.getElementById('login').style.display = 'none';
+        document.getElementById('admin-interface').style.display = 'block';
+        renderAnalytics();
+      } else {
+        document.getElementById('msg').innerText = 'Incorrect password.';
+      }
+    }
+
+    Object.defineProperty(window, 'secret', {
+      get: function() {
+        window.location.href = 'https://www.youtube.com/watch?v=dQw4w9WgXcQ';
+        return 'NOPE';
+      },
+      set: function() {}
+    });
+
+    setInterval(() => {
+      const log = document.getElementById('fake-log');
+      log.textContent = `Trace ${Math.floor(Math.random()*10000)} from root@rtqzy.store at ${new Date().toLocaleTimeString()}`;
+    }, 5000);
+
+    document.addEventListener('keydown', function(e) {
+      if (
+        e.key === 'F12' ||
+        (e.ctrlKey && e.shiftKey && ['I','J','C','K'].includes(e.key.toUpperCase())) ||
+        (e.ctrlKey && e.key === 'u')
+      ) {
+        e.preventDefault();
+        alert('Access denied');
+      }
+    });
+
+    function renderAnalytics() {
+      const ul = document.getElementById('tool-stats');
+      ul.innerHTML = '';
+      const data = [];
+      const labels = [];
+      tools.forEach(t => {
+        const count = usage[t] || 0;
+        labels.push(t);
+        data.push(count);
+        ul.innerHTML += `<li><strong>${t}:</strong> ${count} uses</li>`;
+      });
+      new Chart(document.getElementById('toolChart'), {
+        type: 'bar',
+        data: { labels: labels, datasets: [{ label: 'Tool Usage', data: data, backgroundColor: '#3b82f6' }] },
+        options: { responsive: true, scales: { y: { beginAtZero: true } } }
+      });
+      updateLogFeed();
+    }
+
+    function updateLogFeed() {
+      const ul = document.getElementById('log-feed');
+      ul.innerHTML = '';
+      logs.slice().reverse().forEach(entry => {
+        const li = document.createElement('li');
+        li.textContent = entry;
+        ul.appendChild(li);
+      });
+    }
+
+    function clearLogs() {
+      logs = [];
+      localStorage.setItem('adminLogs', '[]');
+      updateLogFeed();
+    }
+
+    function resetUsage() {
+      usage = {};
+      localStorage.setItem('toolUsage', '{}');
+      renderAnalytics();
+    }
+
+    function exportCSV() {
+      const lines = ['Tool,Usage'];
+      tools.forEach(t => lines.push(`${t},${usage[t] || 0}`));
+      const blob = new Blob([lines.join('\n')], { type: 'text/csv' });
+      const link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = 'rtqzy-usage.csv';
+      link.click();
+    }
+
+    function lockTools() {
+      localStorage.setItem('lockTools', 'true');
+      alert('All tools are now locked site-wide.');
+    }
+
+    function toggleVisibility() {
+      alert('Toggled tool visibility (simulated). Add flags in tool loader logic.');
+    }
+
+    window.logToolUse = function(toolName) {
+      usage[toolName] = (usage[toolName] || 0) + 1;
+      logs.push(`User used '${toolName}' at ${new Date().toLocaleTimeString()}`);
+      localStorage.setItem('toolUsage', JSON.stringify(usage));
+      localStorage.setItem('adminLogs', JSON.stringify(logs));
+    }
+  </script>
+</body>
+</html>
