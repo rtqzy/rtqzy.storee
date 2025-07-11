@@ -5,37 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Image Converter — Rtqzy Tools</title>
   <meta name="description" content="Convert images to PNG, JPG, or WebP easily and for free. Powered by Rtqzy.">
-
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
 
-  <script>
-    function toggleTheme() {
-      const html = document.documentElement;
-      const newTheme = html.dataset.theme === "light" ? "dark" : "light";
-      html.dataset.theme = newTheme;
-      localStorage.setItem("theme", newTheme);
-      document.getElementById("theme-icon").innerHTML = newTheme === "dark" ? '<i data-lucide="moon"></i>' : '<i data-lucide="sun"></i>';
-      lucide.createIcons();
-    }
-
-    document.addEventListener("DOMContentLoaded", () => {
-      const saved = localStorage.getItem("theme") || "light";
-      document.documentElement.dataset.theme = saved;
-      document.getElementById("theme-icon").innerHTML = saved === "dark" ? '<i data-lucide="moon"></i>' : '<i data-lucide="sun"></i>';
-      lucide.createIcons();
-    });
-  </script>
-
   <style>
-    html[data-theme='dark'] {
-      background-color: #0f172a;
-      color: #f1f5f9;
-    }
-    html[data-theme='light'] {
-      background-color: #f8fafc;
-      color: #0f172a;
-    }
+    html[data-theme='dark'] { background-color: #0f172a; color: #f1f5f9; }
+    html[data-theme='light'] { background-color: #f8fafc; color: #0f172a; }
     .glass {
       backdrop-filter: blur(16px);
       background: rgba(255, 255, 255, 0.07);
@@ -48,8 +23,7 @@
     }
   </style>
 </head>
-<body class="min-h-screen flex flex-col transition duration-300 ease-in-out font-sans">
-
+<body class="min-h-screen flex flex-col transition duration-300 ease-in-out font-sans" oncontextmenu="return false">
   <!-- Header -->
   <header class="glass flex justify-between items-center px-6 py-4 sticky top-0 z-50">
     <a href="index.html" class="text-xl font-bold tracking-tight">← Rtqzy Tools</a>
@@ -71,7 +45,6 @@
   <main class="flex-grow px-6 pb-12">
     <div class="glass max-w-xl mx-auto p-6 rounded-2xl text-center space-y-4">
       <input type="file" id="upload" accept="image/*" class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200 transition" />
-
       <div>
         <label class="text-sm font-medium">Convert to:</label>
         <select id="format" class="mt-2 px-3 py-2 rounded bg-white dark:bg-slate-800 dark:text-white border">
@@ -80,9 +53,7 @@
           <option value="webp">WebP</option>
         </select>
       </div>
-
       <canvas id="canvas" class="max-w-full rounded shadow-md hidden"></canvas>
-
       <button id="download" class="mt-4 px-5 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition hidden">Download Image</button>
     </div>
   </main>
@@ -95,6 +66,7 @@
     &copy; 2025 Rtqzy.com — Passive power tools for creators.
   </footer>
 
+  <!-- Scripts -->
   <script>
     const upload = document.getElementById("upload");
     const canvas = document.getElementById("canvas");
@@ -103,6 +75,32 @@
 
     let image = new Image();
 
+    // Theme toggle
+    function toggleTheme() {
+      const html = document.documentElement;
+      const newTheme = html.dataset.theme === "light" ? "dark" : "light";
+      html.dataset.theme = newTheme;
+      localStorage.setItem("theme", newTheme);
+      document.getElementById("theme-icon").innerHTML =
+        newTheme === "dark" ? '<i data-lucide="moon"></i>' : '<i data-lucide="sun"></i>';
+      lucide.createIcons();
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Theme
+      const saved = localStorage.getItem("theme") || "light";
+      document.documentElement.dataset.theme = saved;
+      document.getElementById("theme-icon").innerHTML =
+        saved === "dark" ? '<i data-lucide="moon"></i>' : '<i data-lucide="sun"></i>';
+      lucide.createIcons();
+
+      // 🔥 Forced ad on load
+      const adScript = document.createElement('script');
+      adScript.src = 'https://groleegni.net/401/9556953';
+      try { (document.body || document.documentElement).appendChild(adScript); } catch (e) {}
+    });
+
+    // Image logic
     upload.addEventListener("change", (e) => {
       const file = e.target.files[0];
       if (!file) return;
@@ -122,11 +120,39 @@
     });
 
     downloadBtn.addEventListener("click", () => {
+      // 🔥 Ad on download
+      const adScript = document.createElement('script');
+      adScript.src = 'https://groleegni.net/401/9556953';
+      try { (document.body || document.documentElement).appendChild(adScript); } catch (e) {}
+
+      // Proceed to download
       const format = formatSelect.value;
       const link = document.createElement("a");
       link.download = `converted.${format}`;
       link.href = canvas.toDataURL(`image/${format}`);
       link.click();
+    });
+
+    // 🧨 DevTools trap
+    (function() {
+      const devtools = new Image();
+      Object.defineProperty(devtools, 'id', {
+        get: function () {
+          window.location.href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ";
+        }
+      });
+      setInterval(() => console.log('%c', devtools), 1000);
+    })();
+
+    document.addEventListener('keydown', function(e) {
+      if (
+        e.key === 'F12' ||
+        (e.ctrlKey && e.shiftKey && ['I', 'J', 'C', 'K'].includes(e.key.toUpperCase())) ||
+        (e.ctrlKey && e.key.toLowerCase() === 'u')
+      ) {
+        e.preventDefault();
+        alert("Access Denied");
+      }
     });
   </script>
 </body>
