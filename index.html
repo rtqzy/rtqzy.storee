@@ -27,26 +27,47 @@
       background: rgba(255, 255, 255, 0.07);
       border: 1px solid rgba(255, 255, 255, 0.15);
       box-shadow: 0 0 25px rgba(255, 255, 255, 0.05);
+      transition: transform 0.2s ease;
     }
     html[data-theme='dark'] .glass {
       background: rgba(30, 41, 59, 0.25);
       border-color: rgba(255, 255, 255, 0.05);
     }
-    #ad-check:not(:visible) ~ * {
-      display: none;
+    .glass:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 30px rgba(59, 130, 246, 0.7);
+    }
+    #ad-banner {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(90deg, #3b82f6, #2563eb);
+      color: white;
+      font-weight: bold;
+      font-size: 1rem;
+      text-align: center;
+      padding: 10px 0;
+      z-index: 9999;
+      user-select: none;
+    }
+    /* push page content down so banner doesn't overlap */
+    body {
+      padding-top: 50px;
     }
   </style>
 </head>
 <body class="min-h-screen flex flex-col font-sans transition duration-300 ease-in-out" oncontextmenu="return false">
 
-  <header class="glass flex justify-between items-center px-6 py-4 sticky top-0 z-40">
+  <!-- Ad banner -->
+  <div id="ad-banner">
+    📢 Ad Space — This ad must be viewed before using tools.
+  </div>
+
+  <header class="glass flex justify-between items-center px-6 py-4 sticky top-50 z-40">
     <div class="text-2xl font-bold tracking-tight">Rtqzy Tools</div>
     <button onclick="toggleTheme()" class="rounded-full p-2 hover:bg-blue-500 hover:text-white transition" id="theme-icon"></button>
   </header>
-
-  <div id="ad-check" class="text-center text-sm py-2 bg-gradient-to-r from-indigo-100 to-indigo-200 text-indigo-900 font-medium">
-    📢 Ad: This is a required ad section. You must view this to use the tools.
-  </div>
 
   <section class="text-center py-12 px-4">
     <h1 class="text-4xl font-extrabold mb-4">Modern Free Tools for Everyday Use</h1>
@@ -54,32 +75,32 @@
   </section>
 
   <main class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 px-6 pb-16">
-    <a href="image-converter.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
+    <a href="image-converter.html" class="glass p-6 rounded-2xl flex flex-col items-center text-center tool-link" data-target="image-converter.html">
       <div class="text-blue-500 mb-3" data-lucide="image" style="width: 36px; height: 36px;"></div>
       <h3 class="text-xl font-semibold">Image Converter</h3>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">JPG ↔ PNG, WebP, more</p>
     </a>
-    <a href="yt-downloader.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
+    <a href="yt-downloader.html" class="glass p-6 rounded-2xl flex flex-col items-center text-center tool-link" data-target="yt-downloader.html">
       <div class="text-red-500 mb-3" data-lucide="youtube" style="width: 36px; height: 36px;"></div>
       <h3 class="text-xl font-semibold">YouTube to MP3/MP4</h3>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Download videos easily</p>
     </a>
-    <a href="pdf-tools.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
+    <a href="pdf-tools.html" class="glass p-6 rounded-2xl flex flex-col items-center text-center tool-link" data-target="pdf-tools.html">
       <div class="text-purple-500 mb-3" data-lucide="file-text" style="width: 36px; height: 36px;"></div>
       <h3 class="text-xl font-semibold">PDF Tools</h3>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Merge, split, compress</p>
     </a>
-    <a href="qr-maker.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
+    <a href="qr-maker.html" class="glass p-6 rounded-2xl flex flex-col items-center text-center tool-link" data-target="qr-maker.html">
       <div class="text-green-500 mb-3" data-lucide="qrcode" style="width: 36px; height: 36px;"></div>
       <h3 class="text-xl font-semibold">QR Code Generator</h3>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Custom QR to any link</p>
     </a>
-    <a href="discord-gif-maker.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
+    <a href="discord-gif-maker.html" class="glass p-6 rounded-2xl flex flex-col items-center text-center tool-link" data-target="discord-gif-maker.html">
       <div class="text-pink-500 mb-3" data-lucide="film" style="width: 36px; height: 36px;"></div>
       <h3 class="text-xl font-semibold">Discord GIF Maker</h3>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Safe GIFs, resize & trim</p>
     </a>
-    <a href="link-shortener.html" class="glass p-6 rounded-2xl hover:shadow-xl transition transform hover:scale-105 flex flex-col items-center text-center">
+    <a href="link-shortener.html" class="glass p-6 rounded-2xl flex flex-col items-center text-center tool-link" data-target="link-shortener.html">
       <div class="text-amber-500 mb-3" data-lucide="link" style="width: 36px; height: 36px;"></div>
       <h3 class="text-xl font-semibold">Link Shortener</h3>
       <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Easy to share URLs</p>
@@ -89,6 +110,16 @@
   <footer class="text-center py-6 text-xs text-gray-500 dark:text-gray-400">
     &copy; 2025 <a href="admin.html" class="hover:underline hover:text-blue-500 transition">Rtqzy.store</a> — Built for creators, powered by clicks 💼
   </footer>
+
+  <!-- Propeller Interstellar script -->
+  <script>
+    (function(d,z,s){
+      s.src='https://'+d+'/401/'+z;
+      try{
+        (document.body||document.documentElement).appendChild(s)
+      }catch(e){}
+    })('groleegni.net',9556415,document.createElement('script'));
+  </script>
 
   <script>
     function toggleTheme() {
@@ -107,7 +138,7 @@
       lucide.createIcons();
     });
 
-    // Disable devtools and redirect
+    // Anti devtools + right-click protection + redirect
     (function() {
       const check = setInterval(() => {
         const devtools = new Image();
@@ -120,7 +151,6 @@
       }, 1000);
     })();
 
-    // Disable keys
     document.addEventListener('keydown', function(e) {
       if (
         e.key === 'F12' ||
@@ -134,7 +164,29 @@
       }
     });
 
-    // Fake decoy function
+    document.body.oncontextmenu = function () {
+      alert("Right-click disabled");
+      return false;
+    };
+
+    // Forced Interstitial logic on tool click
+    document.querySelectorAll('.tool-link').forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        const targetURL = link.getAttribute('data-target');
+
+        // Show Propeller interstitial ad by triggering the script
+        // The script itself handles the ad display and redirect timing
+
+        // For safety, wait a bit before redirecting to let the ad script kick in
+        // Usually Propeller interstitial auto redirects after their own timing
+        setTimeout(() => {
+          window.location.href = targetURL;
+        }, 15000); // 15 seconds delay for ad view (adjust if needed)
+      });
+    });
+
+    // Fake decoy functions for obfuscation
     function verifyLicenseKey() {
       throw new Error("Unauthorized usage detected. Reported.");
     }
